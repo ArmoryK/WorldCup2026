@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Cup 2026 — Prediction Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1a7a4a;
+    --green-dark: #0f4f2f;
+    --green-light: #e8f5ee;
+    --gold: #f0a500;
+    --gold-dark: #c07800;
+    --red: #d32f2f;
+    --bg: #0d1f14;
+    --surface: #132a1a;
+    --surface2: #1c3824;
+    --border: rgba(255,255,255,0.08);
+    --text: #f0f0f0;
+    --muted: #8aab96;
+    --white: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0a1a0f 0%, #1a4a2a 50%, #0a1a0f 100%);
+    border-bottom: 2px solid var(--gold);
+    padding: 2rem 1rem 1.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(ellipse at center, rgba(240,165,0,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .trophy-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 0.5rem;
+    filter: drop-shadow(0 0 12px rgba(240,165,0,0.5));
+  }
+  header h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--white);
+    line-height: 1;
+  }
+  header h1 span {
+    color: var(--gold);
+  }
+  header p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+
+  /* MAIN CONTAINER */
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 4rem;
+  }
+
+  /* NAME INPUT */
+  .name-section {
+    background: var(--surface);
+    border: 1px solid var(--gold);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .name-section label {
+    display: block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+  .name-section small {
+    display: block;
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-bottom: 0.75rem;
+  }
+  .name-section input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .name-section input:focus {
+    border-color: var(--gold);
+  }
+  .name-section input::placeholder { color: var(--muted); }
+
+  /* INSTRUCTIONS */
+  .instructions {
+    background: rgba(240,165,0,0.08);
+    border: 1px solid rgba(240,165,0,0.25);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 2rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .instructions strong { color: var(--gold); }
+
+  /* DATE HEADER */
+  .date-header {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    padding: 1.5rem 0 0.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1rem;
+  }
+
+  /* MATCH CARD */
+  .match-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+    transition: border-color 0.2s;
+  }
+  .match-card.error {
+    border-color: var(--red);
+    background: rgba(211,47,47,0.07);
+  }
+  .match-card.valid {
+    border-color: rgba(26,122,74,0.5);
+  }
+
+  .match-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.85rem;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .match-id {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    background: var(--surface2);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .match-group {
+    font-size: 0.75rem;
+    color: var(--gold);
+    font-weight: 600;
+  }
+  .match-time {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-left: auto;
+  }
+
+  .teams-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .team-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    flex: 1;
+    min-width: 80px;
+  }
+  .team-home { text-align: right; color: var(--white); }
+  .team-away { text-align: left; color: #b0c4be; }
+  .vs-badge {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 0.75rem;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  /* SCORE INPUTS */
+  .score-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.5rem;
+  }
+  .score-field {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .score-field label {
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .score-field label span {
+    display: block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  .score-field input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 0.55rem 0.25rem;
+    color: var(--white);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    -moz-appearance: textfield;
+  }
+  .score-field input::-webkit-outer-spin-button,
+  .score-field input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .score-field input:focus { border-color: var(--gold); background: rgba(240,165,0,0.06); }
+
+  .score-status {
+    text-align: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-top: 0.5rem;
+    height: 20px;
+  }
+  .score-status.ok { color: #4caf50; }
+  .score-status.over { color: #ff9800; }
+  .score-status.under { color: var(--muted); }
+  .score-status.zero { color: var(--muted); }
+
+  /* PROGRESS BAR */
+  .progress-bar-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(8px);
+  }
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .progress-top strong { color: var(--text); }
+  .progress-bar {
+    height: 6px;
+    background: var(--surface2);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--gold));
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+
+  /* SUBMIT */
+  .submit-section {
+    margin-top: 2.5rem;
+    text-align: center;
+  }
+  .error-summary {
+    background: rgba(211,47,47,0.1);
+    border: 1px solid rgba(211,47,47,0.3);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    color: #ef9a9a;
+    margin-bottom: 1rem;
+    display: none;
+  }
+  .submit-btn {
+    background: var(--gold);
+    color: var(--bg);
+    border: none;
+    border-radius: 10px;
+    padding: 1rem 3rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    display: inline-block;
+  }
+  .submit-btn:hover { background: var(--gold-dark); }
+  .submit-btn:active { transform: scale(0.98); }
+  .submit-btn:disabled { background: var(--muted); cursor: not-allowed; }
+
+  /* SUCCESS / LOADING */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .overlay.show { display: flex; }
+  .overlay-card {
+    background: var(--surface);
+    border: 1px solid var(--gold);
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    max-width: 380px;
+    width: 90%;
+  }
+  .overlay-card .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .overlay-card h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .overlay-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.5; }
+  .spinner {
+    width: 48px; height: 48px;
+    border: 4px solid var(--surface2);
+    border-top: 4px solid var(--gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 1rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 500px) {
+    .score-inputs { gap: 0.35rem; }
+    .score-field input { font-size: 1.2rem; padding: 0.45rem 0.15rem; }
+    .team-name { font-size: 0.95rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="trophy-icon">🏆</span>
+  <h1>FIFA World Cup <span>2026</span></h1>
+  <p>Weighted Prediction Game — แจกแต้มให้ครบ 10 ต่อเกม</p>
+</header>
+
+<div class="container">
+
+  <!-- NAME -->
+  <div class="name-section">
+    <label for="contestant-name">ชื่อผู้เข้าแข่งขัน (นามปากกา)</label>
+    <small>⚠️ ห้ามใช้ชื่อจริง</small>
+    <input type="text" id="contestant-name" placeholder="ใส่นามปากกาของคุณ..." maxlength="60" autocomplete="off">
+  </div>
+
+  <!-- INSTRUCTIONS -->
+  <div class="instructions">
+    <strong>วิธีเล่น:</strong> แจกแต้ม <strong>10 แต้มพอดี</strong> ให้กับ 3 ผลลัพธ์ในแต่ละเกม (ทีมเหย้าชนะ / เสมอ / ทีมเยือนชนะ)<br>
+    ตัวอย่าง: เหย้า <strong>6</strong> + เสมอ <strong>3</strong> + เยือน <strong>1</strong> = 10 ✅ &nbsp;|&nbsp; เกมที่แต้มไม่ครบ 10 จะ<strong>ส่งไม่ได้</strong>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-bar-wrap">
+    <div class="progress-top">
+      <span>ความคืบหน้า: <strong id="valid-count">0</strong> / 72 เกม</span>
+      <span id="progress-pct">0%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+
+  <!-- MATCHES (injected by JS) -->
+  <div id="matches-container"></div>
+
+  <!-- SUBMIT -->
+  <div class="submit-section">
+    <div class="error-summary" id="error-summary"></div>
+    <button class="submit-btn" id="submit-btn" onclick="submitForm()">ส่งคำทาย 🚀</button>
+  </div>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div class="overlay" id="loading-overlay">
+  <div class="overlay-card">
+    <div class="spinner"></div>
+    <h2>กำลังส่งข้อมูล...</h2>
+    <p>โปรดรอสักครู่</p>
+  </div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="overlay" id="success-overlay">
+  <div class="overlay-card">
+    <div class="icon">🎉</div>
+    <h2 style="color:var(--gold)">ส่งสำเร็จ!</h2>
+    <p>บันทึกคำทายของคุณเรียบร้อยแล้ว<br>โชคดีในการแข่งขัน!</p>
+  </div>
+</div>
+
+<!-- ERROR OVERLAY -->
+<div class="overlay" id="error-overlay" onclick="document.getElementById('error-overlay').classList.remove('show')">
+  <div class="overlay-card">
+    <div class="icon">❌</div>
+    <h2 style="color:#ef9a9a">ส่งไม่สำเร็จ</h2>
+    <p id="error-msg">เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง</p>
+  </div>
+</div>
+
+<script>
+// ===================== MATCH DATA =====================
+const MATCHES = [
+  // Date, Group, Home, Away, Time
+  {id:1,  date:"ศุกร์ 12 มิ.ย. 69",   group:"A", home:"เม็กซิโก",         away:"แอฟริกาใต้",              time:"02.00 น."},
+  {id:2,  date:"ศุกร์ 12 มิ.ย. 69",   group:"A", home:"เกาหลีใต้",        away:"เช็กเกีย",                time:"09.00 น."},
+  {id:3,  date:"เสาร์ 13 มิ.ย. 69",   group:"B", home:"แคนาดา",           away:"บอสเนียและเฮอร์เซโกวีนา", time:"02.00 น."},
+  {id:4,  date:"เสาร์ 13 มิ.ย. 69",   group:"D", home:"สหรัฐอเมริกา",     away:"ปารากวัย",               time:"08.00 น."},
+  {id:5,  date:"อาทิตย์ 14 มิ.ย. 69", group:"B", home:"กาตาร์",           away:"สวิตเซอร์แลนด์",          time:"02.00 น."},
+  {id:6,  date:"อาทิตย์ 14 มิ.ย. 69", group:"C", home:"บราซิล",           away:"โมร็อกโก",               time:"05.00 น."},
+  {id:7,  date:"อาทิตย์ 14 มิ.ย. 69", group:"C", home:"เฮติ",             away:"สกอตแลนด์",              time:"08.00 น."},
+  {id:8,  date:"อาทิตย์ 14 มิ.ย. 69", group:"D", home:"ออสเตรเลีย",       away:"ตุรกี",                  time:"11.00 น."},
+  {id:9,  date:"จันทร์ 15 มิ.ย. 69",  group:"E", home:"เยอรมนี",          away:"คูราเซา",                time:"00.00 น."},
+  {id:10, date:"จันทร์ 15 มิ.ย. 69",  group:"F", home:"เนเธอร์แลนด์",    away:"ญี่ปุ่น",                time:"03.00 น."},
+  {id:11, date:"จันทร์ 15 มิ.ย. 69",  group:"E", home:"ไอวอรีโคสต์",      away:"เอกวาดอร์",             time:"06.00 น."},
+  {id:12, date:"จันทร์ 15 มิ.ย. 69",  group:"F", home:"สวีเดน",           away:"ตูนิเซีย",               time:"09.00 น."},
+  {id:13, date:"จันทร์ 15 มิ.ย. 69",  group:"H", home:"สเปน",             away:"เคปเวิร์ด",              time:"23.00 น."},
+  {id:14, date:"อังคาร 16 มิ.ย. 69",  group:"G", home:"เบลเยียม",         away:"อียิปต์",                time:"02.00 น."},
+  {id:15, date:"อังคาร 16 มิ.ย. 69",  group:"H", home:"ซาอุดีอาระเบีย",  away:"อุรุกวัย",              time:"05.00 น."},
+  {id:16, date:"อังคาร 16 มิ.ย. 69",  group:"G", home:"อิหร่าน",          away:"นิวซีแลนด์",            time:"08.00 น."},
+  {id:17, date:"พุธ 17 มิ.ย. 69",     group:"I", home:"ฝรั่งเศส",         away:"เซเนกัล",               time:"02.00 น."},
+  {id:18, date:"พุธ 17 มิ.ย. 69",     group:"I", home:"อิรัก",            away:"นอร์เวย์",               time:"05.00 น."},
+  {id:19, date:"พุธ 17 มิ.ย. 69",     group:"J", home:"อาร์เจนตินา",     away:"แอลจีเรีย",             time:"08.00 น."},
+  {id:20, date:"พุธ 17 มิ.ย. 69",     group:"J", home:"ออสเตรีย",         away:"จอร์แดน",               time:"11.00 น."},
+  {id:21, date:"พฤหัสบดี 18 มิ.ย. 69",group:"K", home:"โปรตุเกส",        away:"ดีอาร์ คองโก",          time:"00.00 น."},
+  {id:22, date:"พฤหัสบดี 18 มิ.ย. 69",group:"L", home:"อังกฤษ",           away:"โครเอเชีย",              time:"03.00 น."},
+  {id:23, date:"พฤหัสบดี 18 มิ.ย. 69",group:"L", home:"กานา",             away:"ปานามา",                time:"06.00 น."},
+  {id:24, date:"พฤหัสบดี 18 มิ.ย. 69",group:"K", home:"อุซเบกิสถาน",     away:"โคลอมเบีย",             time:"09.00 น."},
+  {id:25, date:"พฤหัสบดี 18 มิ.ย. 69",group:"A", home:"เช็กเกีย",         away:"แอฟริกาใต้",            time:"23.00 น."},
+  {id:26, date:"ศุกร์ 19 มิ.ย. 69",   group:"B", home:"สวิตเซอร์แลนด์",  away:"บอสเนียและเฮอร์เซโกวีนา",time:"02.00 น."},
+  {id:27, date:"ศุกร์ 19 มิ.ย. 69",   group:"B", home:"แคนาดา",           away:"กาตาร์",                time:"05.00 น."},
+  {id:28, date:"ศุกร์ 19 มิ.ย. 69",   group:"A", home:"เม็กซิโก",         away:"เกาหลีใต้",             time:"08.00 น."},
+  {id:29, date:"เสาร์ 20 มิ.ย. 69",   group:"D", home:"สหรัฐอเมริกา",     away:"ออสเตรเลีย",            time:"02.00 น."},
+  {id:30, date:"เสาร์ 20 มิ.ย. 69",   group:"C", home:"สกอตแลนด์",        away:"โมร็อกโก",              time:"05.00 น."},
+  {id:31, date:"เสาร์ 20 มิ.ย. 69",   group:"C", home:"บราซิล",           away:"เฮติ",                  time:"07.30 น."},
+  {id:32, date:"เสาร์ 20 มิ.ย. 69",   group:"D", home:"ตุรกี",            away:"ปารากวัย",              time:"10.00 น."},
+  {id:33, date:"อาทิตย์ 21 มิ.ย. 69", group:"F", home:"เนเธอร์แลนด์",    away:"สวีเดน",                time:"00.00 น."},
+  {id:34, date:"อาทิตย์ 21 มิ.ย. 69", group:"E", home:"เยอรมนี",          away:"ไอวอรีโคสต์",           time:"03.00 น."},
+  {id:35, date:"อาทิตย์ 21 มิ.ย. 69", group:"E", home:"เอกวาดอร์",        away:"คูราเซา",               time:"07.00 น."},
+  {id:36, date:"อาทิตย์ 21 มิ.ย. 69", group:"F", home:"ตูนิเซีย",         away:"ญี่ปุ่น",               time:"11.00 น."},
+  {id:37, date:"อาทิตย์ 21 มิ.ย. 69", group:"H", home:"สเปน",             away:"ซาอุดีอาระเบีย",        time:"23.00 น."},
+  {id:38, date:"จันทร์ 22 มิ.ย. 69",  group:"G", home:"เบลเยียม",         away:"อิหร่าน",               time:"02.00 น."},
+  {id:39, date:"จันทร์ 22 มิ.ย. 69",  group:"H", home:"อุรุกวัย",         away:"เคปเวิร์ด",             time:"05.00 น."},
+  {id:40, date:"จันทร์ 22 มิ.ย. 69",  group:"G", home:"นิวซีแลนด์",      away:"อียิปต์",               time:"08.00 น."},
+  {id:41, date:"อังคาร 23 มิ.ย. 69",  group:"I", home:"นอร์เวย์",         away:"เซเนกัล",               time:"01.00 น."},
+  {id:42, date:"อังคาร 23 มิ.ย. 69",  group:"I", home:"ฝรั่งเศส",         away:"อิรัก",                 time:"04.00 น."},
+  {id:43, date:"อังคาร 23 มิ.ย. 69",  group:"J", home:"อาร์เจนตินา",     away:"ออสเตรีย",              time:"06.00 น."},
+  {id:44, date:"อังคาร 23 มิ.ย. 69",  group:"J", home:"จอร์แดน",          away:"แอลจีเรีย",             time:"09.00 น."},
+  {id:45, date:"พุธ 24 มิ.ย. 69",     group:"K", home:"โปรตุเกส",        away:"อุซเบกิสถาน",           time:"00.00 น."},
+  {id:46, date:"พุธ 24 มิ.ย. 69",     group:"L", home:"อังกฤษ",           away:"กานา",                  time:"03.00 น."},
+  {id:47, date:"พุธ 24 มิ.ย. 69",     group:"L", home:"ปานามา",           away:"โครเอเชีย",             time:"06.00 น."},
+  {id:48, date:"พุธ 24 มิ.ย. 69",     group:"K", home:"โคลอมเบีย",        away:"ดีอาร์ คองโก",         time:"09.00 น."},
+  {id:49, date:"พฤหัสบดี 25 มิ.ย. 69",group:"B", home:"สวิตเซอร์แลนด์",  away:"แคนาดา",               time:"02.00 น."},
+  {id:50, date:"พฤหัสบดี 25 มิ.ย. 69",group:"B", home:"บอสเนียและเฮอร์เซโกวีนา",away:"กาตาร์",         time:"02.00 น."},
+  {id:51, date:"พฤหัสบดี 25 มิ.ย. 69",group:"C", home:"สกอตแลนด์",       away:"บราซิล",               time:"05.00 น."},
+  {id:52, date:"พฤหัสบดี 25 มิ.ย. 69",group:"C", home:"โมร็อกโก",         away:"เฮติ",                 time:"05.00 น."},
+  {id:53, date:"พฤหัสบดี 25 มิ.ย. 69",group:"A", home:"เช็กเกีย",         away:"เม็กซิโก",             time:"08.00 น."},
+  {id:54, date:"พฤหัสบดี 25 มิ.ย. 69",group:"A", home:"แอฟริกาใต้",       away:"เกาหลีใต้",            time:"08.00 น."},
+  {id:55, date:"ศุกร์ 26 มิ.ย. 69",   group:"E", home:"เอกวาดอร์",        away:"เยอรมนี",              time:"03.00 น."},
+  {id:56, date:"ศุกร์ 26 มิ.ย. 69",   group:"E", home:"คูราเซา",          away:"ไอวอรีโคสต์",          time:"03.00 น."},
+  {id:57, date:"ศุกร์ 26 มิ.ย. 69",   group:"F", home:"ตูนิเซีย",         away:"เนเธอร์แลนด์",         time:"06.00 น."},
+  {id:58, date:"ศุกร์ 26 มิ.ย. 69",   group:"F", home:"ญี่ปุ่น",          away:"สวีเดน",               time:"06.00 น."},
+  {id:59, date:"ศุกร์ 26 มิ.ย. 69",   group:"D", home:"ตุรกี",            away:"สหรัฐอเมริกา",         time:"09.00 น."},
+  {id:60, date:"ศุกร์ 26 มิ.ย. 69",   group:"D", home:"ปารากวัย",         away:"ออสเตรเลีย",           time:"09.00 น."},
+  {id:61, date:"เสาร์ 27 มิ.ย. 69",   group:"I", home:"นอร์เวย์",         away:"ฝรั่งเศส",             time:"02.00 น."},
+  {id:62, date:"เสาร์ 27 มิ.ย. 69",   group:"I", home:"เซเนกัล",          away:"อิรัก",                time:"02.00 น."},
+  {id:63, date:"เสาร์ 27 มิ.ย. 69",   group:"H", home:"อุรุกวัย",         away:"สเปน",                 time:"07.00 น."},
+  {id:64, date:"เสาร์ 27 มิ.ย. 69",   group:"H", home:"เคปเวิร์ด",        away:"ซาอุดีอาระเบีย",       time:"07.00 น."},
+  {id:65, date:"เสาร์ 27 มิ.ย. 69",   group:"G", home:"นิวซีแลนด์",      away:"เบลเยียม",             time:"10.00 น."},
+  {id:66, date:"เสาร์ 27 มิ.ย. 69",   group:"G", home:"อียิปต์",          away:"อิหร่าน",              time:"10.00 น."},
+  {id:67, date:"อาทิตย์ 28 มิ.ย. 69", group:"L", home:"ปานามา",           away:"อังกฤษ",               time:"04.00 น."},
+  {id:68, date:"อาทิตย์ 28 มิ.ย. 69", group:"L", home:"โครเอเชีย",        away:"กานา",                 time:"04.00 น."},
+  {id:69, date:"อาทิตย์ 28 มิ.ย. 69", group:"K", home:"โคลอมเบีย",        away:"โปรตุเกส",             time:"06.30 น."},
+  {id:70, date:"อาทิตย์ 28 มิ.ย. 69", group:"K", home:"ดีอาร์ คองโก",    away:"อุซเบกิสถาน",          time:"06.30 น."},
+  {id:71, date:"อาทิตย์ 28 มิ.ย. 69", group:"J", home:"จอร์แดน",          away:"อาร์เจนตินา",          time:"09.00 น."},
+  {id:72, date:"อาทิตย์ 28 มิ.ย. 69", group:"J", home:"แอลจีเรีย",        away:"ออสเตรีย",             time:"09.00 น."},
+];
+
+// ===================== RENDER MATCHES =====================
+const container = document.getElementById('matches-container');
+let currentDate = null;
+
+MATCHES.forEach(m => {
+  if (m.date !== currentDate) {
+    currentDate = m.date;
+    const dh = document.createElement('div');
+    dh.className = 'date-header';
+    dh.textContent = m.date;
+    container.appendChild(dh);
+  }
+
+  const card = document.createElement('div');
+  card.className = 'match-card';
+  card.id = `match-${m.id}`;
+  card.innerHTML = `
+    <div class="match-header">
+      <span class="match-id">นัดที่ ${m.id}</span>
+      <span class="match-group">กลุ่ม ${m.group}</span>
+      <span class="match-time">⏰ ${m.time}</span>
+    </div>
+    <div class="teams-row">
+      <div class="team-name team-home">${m.home}</div>
+      <div class="vs-badge">VS</div>
+      <div class="team-name team-away">${m.away}</div>
+    </div>
+    <div class="score-inputs">
+      <div class="score-field">
+        <label>ทีมเหย้า ชนะ<span>${m.home}</span></label>
+        <input type="number" id="h${m.id}" min="0" max="10" placeholder="0" oninput="onInput(${m.id})">
+      </div>
+      <div class="score-field">
+        <label>เสมอ<span>Draw</span></label>
+        <input type="number" id="d${m.id}" min="0" max="10" placeholder="0" oninput="onInput(${m.id})">
+      </div>
+      <div class="score-field">
+        <label>ทีมเยือน ชนะ<span>${m.away}</span></label>
+        <input type="number" id="a${m.id}" min="0" max="10" placeholder="0" oninput="onInput(${m.id})">
+      </div>
+    </div>
+    <div class="score-status zero" id="status-${m.id}">รอใส่แต้ม...</div>
+  `;
+  container.appendChild(card);
+});
+
+// ===================== VALIDATION =====================
+function getVal(id) {
+  const v = parseInt(document.getElementById(id).value);
+  return isNaN(v) ? 0 : v;
+}
+
+function onInput(matchId) {
+  const h = getVal(`h${matchId}`);
+  const d = getVal(`d${matchId}`);
+  const a = getVal(`a${matchId}`);
+  const total = h + d + a;
+  const card = document.getElementById(`match-${matchId}`);
+  const status = document.getElementById(`status-${matchId}`);
+
+  card.classList.remove('error', 'valid');
+  status.className = 'score-status';
+
+  if (total === 0) {
+    status.className = 'score-status zero';
+    status.textContent = 'รอใส่แต้ม...';
+  } else if (total === 10) {
+    card.classList.add('valid');
+    status.className = 'score-status ok';
+    status.textContent = `✓ ${total}/10 — ครบแล้ว!`;
+  } else if (total > 10) {
+    card.classList.add('error');
+    status.className = 'score-status over';
+    status.textContent = `${total}/10 — เกิน ${total - 10} แต้ม`;
+  } else {
+    status.className = 'score-status under';
+    status.textContent = `${total}/10 — ขาดอีก ${10 - total} แต้ม`;
+  }
+  updateProgress();
+}
+
+function updateProgress() {
+  let valid = 0;
+  MATCHES.forEach(m => {
+    const h = getVal(`h${m.id}`), d = getVal(`d${m.id}`), a = getVal(`a${m.id}`);
+    if (h + d + a === 10) valid++;
+  });
+  document.getElementById('valid-count').textContent = valid;
+  const pct = Math.round((valid / 72) * 100);
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+// ===================== SUBMIT =====================
+// ⚠️ REPLACE THIS URL with your Google Apps Script Web App URL
+const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+
+async function submitForm() {
+  // Validate name
+  const name = document.getElementById('contestant-name').value.trim();
+  if (!name) {
+    alert('กรุณาใส่ชื่อผู้เข้าแข่งขันก่อน');
+    document.getElementById('contestant-name').focus();
+    return;
+  }
+
+  // Validate all matches
+  const errors = [];
+  MATCHES.forEach(m => {
+    const h = getVal(`h${m.id}`), d = getVal(`d${m.id}`), a = getVal(`a${m.id}`);
+    if (h + d + a !== 10) errors.push(m.id);
+  });
+
+  if (errors.length > 0) {
+    const errDiv = document.getElementById('error-summary');
+    errDiv.style.display = 'block';
+    errDiv.textContent = `⚠️ มี ${errors.length} เกมที่แต้มไม่ครบ 10: นัดที่ ${errors.slice(0, 10).join(', ')}${errors.length > 10 ? '...' : ''}`;
+    // Scroll to first error
+    document.getElementById(`match-${errors[0]}`).scrollIntoView({behavior: 'smooth', block: 'center'});
+    return;
+  }
+
+  document.getElementById('error-summary').style.display = 'none';
+
+  // Build payload
+  const rows = MATCHES.map(m => ({
+    matchId: m.id,
+    group: m.group,
+    home: m.home,
+    away: m.away,
+    homeWeight: getVal(`h${m.id}`),
+    drawWeight: getVal(`d${m.id}`),
+    awayWeight: getVal(`a${m.id}`)
+  }));
+
+  const payload = { name, timestamp: new Date().toISOString(), predictions: rows };
+
+  // Show loading
+  document.getElementById('loading-overlay').classList.add('show');
+
+  try {
+    const resp = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'text/plain' }
+    });
+    const result = await resp.text();
+    document.getElementById('loading-overlay').classList.remove('show');
+    if (result.includes('success') || result.includes('OK')) {
+      document.getElementById('success-overlay').classList.add('show');
+    } else {
+      throw new Error(result);
+    }
+  } catch (e) {
+    document.getElementById('loading-overlay').classList.remove('show');
+    document.getElementById('error-msg').textContent = e.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+    document.getElementById('error-overlay').classList.add('show');
+  }
+}
+</script>
+</body>
+</html>
