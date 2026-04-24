@@ -3,710 +3,244 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>World Cup 2026 — Prediction Game</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<title>World Cup 2026</title>
 <style>
-  :root {
-    --green: #1a7a4a;
-    --green-dark: #0f4f2f;
-    --green-light: #e8f5ee;
-    --gold: #f0a500;
-    --gold-dark: #c07800;
-    --red: #d32f2f;
-    --bg: #0d1f14;
-    --surface: #132a1a;
-    --surface2: #1c3824;
-    --border: rgba(255,255,255,0.08);
-    --text: #f0f0f0;
-    --muted: #8aab96;
-    --white: #ffffff;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Barlow', sans-serif;
-    font-size: 15px;
-    min-height: 100vh;
-  }
-
-  /* HEADER */
-  header {
-    background: linear-gradient(135deg, #0a1a0f 0%, #1a4a2a 50%, #0a1a0f 100%);
-    border-bottom: 2px solid var(--gold);
-    padding: 2rem 1rem 1.5rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  header::before {
-    content: '';
-    position: absolute;
-    top: -50%; left: -50%;
-    width: 200%; height: 200%;
-    background: radial-gradient(ellipse at center, rgba(240,165,0,0.06) 0%, transparent 60%);
-    pointer-events: none;
-  }
-  .trophy-icon {
-    font-size: 3rem;
-    display: block;
-    margin-bottom: 0.5rem;
-    filter: drop-shadow(0 0 12px rgba(240,165,0,0.5));
-  }
-  header h1 {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 900;
-    font-size: clamp(1.8rem, 5vw, 3rem);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--white);
-    line-height: 1;
-  }
-  header h1 span {
-    color: var(--gold);
-  }
-  header p {
-    color: var(--muted);
-    font-size: 0.9rem;
-    margin-top: 0.5rem;
-  }
-
-  /* MAIN CONTAINER */
-  .container {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 1.5rem 1rem 4rem;
-  }
-
-  /* NAME INPUT */
-  .name-section {
-    background: var(--surface);
-    border: 1px solid var(--gold);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-  }
-  .name-section label {
-    display: block;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 1.1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--gold);
-    margin-bottom: 0.5rem;
-  }
-  .name-section small {
-    display: block;
-    color: var(--muted);
-    font-size: 0.8rem;
-    margin-bottom: 0.75rem;
-  }
-  .name-section input {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    color: var(--white);
-    font-family: 'Barlow', sans-serif;
-    font-size: 1rem;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .name-section input:focus {
-    border-color: var(--gold);
-  }
-  .name-section input::placeholder { color: var(--muted); }
-
-  /* INSTRUCTIONS */
-  .instructions {
-    background: rgba(240,165,0,0.08);
-    border: 1px solid rgba(240,165,0,0.25);
-    border-radius: 10px;
-    padding: 1rem 1.25rem;
-    margin-bottom: 2rem;
-    font-size: 0.875rem;
-    color: var(--muted);
-    line-height: 1.6;
-  }
-  .instructions strong { color: var(--gold); }
-
-  /* DATE HEADER */
-  .date-header {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    padding: 1.5rem 0 0.5rem;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 1rem;
-  }
-
-  /* MATCH CARD */
-  .match-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1rem 1.25rem;
-    margin-bottom: 0.75rem;
-    transition: border-color 0.2s;
-  }
-  .match-card.error {
-    border-color: var(--red);
-    background: rgba(211,47,47,0.07);
-  }
-  .match-card.valid {
-    border-color: rgba(26,122,74,0.5);
-  }
-
-  .match-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.85rem;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-  .match-id {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    background: var(--surface2);
-    padding: 2px 8px;
-    border-radius: 4px;
-  }
-  .match-group {
-    font-size: 0.75rem;
-    color: var(--gold);
-    font-weight: 600;
-  }
-  .match-time {
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin-left: auto;
-  }
-
-  .teams-row {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-  }
-  .team-name {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 1.15rem;
-    flex: 1;
-    min-width: 80px;
-  }
-  .team-home { text-align: right; color: var(--white); }
-  .team-away { text-align: left; color: #b0c4be; }
-  .vs-badge {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 3px 10px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 900;
-    font-size: 0.75rem;
-    color: var(--muted);
-    flex-shrink: 0;
-  }
-
-  /* SCORE INPUTS */
-  .score-inputs {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 0.5rem;
-  }
-  .score-field {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-  }
-  .score-field label {
-    font-size: 0.7rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    text-align: center;
-    line-height: 1.3;
-  }
-  .score-field label span {
-    display: block;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-  }
-  .score-field input {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 8px;
-    padding: 0.55rem 0.25rem;
-    color: var(--white);
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 1.4rem;
-    text-align: center;
-    outline: none;
-    transition: border-color 0.2s, background 0.2s;
-    -moz-appearance: textfield;
-  }
-  .score-field input::-webkit-outer-spin-button,
-  .score-field input::-webkit-inner-spin-button { -webkit-appearance: none; }
-  .score-field input:focus { border-color: var(--gold); background: rgba(240,165,0,0.06); }
-
-  .score-status {
-    text-align: center;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 700;
-    margin-top: 0.5rem;
-    height: 20px;
-  }
-  .score-status.ok { color: #4caf50; }
-  .score-status.over { color: #ff9800; }
-  .score-status.under { color: var(--muted); }
-  .score-status.zero { color: var(--muted); }
-
-  /* PROGRESS BAR */
-  .progress-bar-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1rem 1.25rem;
-    margin-bottom: 1.5rem;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    backdrop-filter: blur(8px);
-  }
-  .progress-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-    font-size: 0.8rem;
-    color: var(--muted);
-  }
-  .progress-top strong { color: var(--text); }
-  .progress-bar {
-    height: 6px;
-    background: var(--surface2);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--green), var(--gold));
-    border-radius: 3px;
-    transition: width 0.3s ease;
-  }
-
-  /* SUBMIT */
-  .submit-section {
-    margin-top: 2.5rem;
-    text-align: center;
-  }
-  .error-summary {
-    background: rgba(211,47,47,0.1);
-    border: 1px solid rgba(211,47,47,0.3);
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    font-size: 0.85rem;
-    color: #ef9a9a;
-    margin-bottom: 1rem;
-    display: none;
-  }
-  .submit-btn {
-    background: var(--gold);
-    color: var(--bg);
-    border: none;
-    border-radius: 10px;
-    padding: 1rem 3rem;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 900;
-    font-size: 1.3rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-    display: inline-block;
-  }
-  .submit-btn:hover { background: var(--gold-dark); }
-  .submit-btn:active { transform: scale(0.98); }
-  .submit-btn:disabled { background: var(--muted); cursor: not-allowed; }
-
-  /* SUCCESS / LOADING */
-  .overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.75);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-  }
-  .overlay.show { display: flex; }
-  .overlay-card {
-    background: var(--surface);
-    border: 1px solid var(--gold);
-    border-radius: 16px;
-    padding: 2.5rem 2rem;
-    text-align: center;
-    max-width: 380px;
-    width: 90%;
-  }
-  .overlay-card .icon { font-size: 3rem; margin-bottom: 1rem; }
-  .overlay-card h2 {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1.6rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-  }
-  .overlay-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.5; }
-  .spinner {
-    width: 48px; height: 48px;
-    border: 4px solid var(--surface2);
-    border-top: 4px solid var(--gold);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 1rem;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  @media (max-width: 500px) {
-    .score-inputs { gap: 0.35rem; }
-    .score-field input { font-size: 1.2rem; padding: 0.45rem 0.15rem; }
-    .team-name { font-size: 0.95rem; }
-  }
+:root{--gold:#f0a500;--bg:#0d1f14;--surface:#132a1a;--surface2:#1c3824;--border:rgba(255,255,255,0.1);--text:#f0f0f0;--muted:#8aab96;--red:#d32f2f}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;font-size:15px}
+header{background:linear-gradient(135deg,#0a1a0f,#1a4a2a,#0a1a0f);border-bottom:2px solid var(--gold);padding:2rem 1rem 1.5rem;text-align:center}
+header h1{font-size:clamp(1.6rem,5vw,2.8rem);font-weight:900;text-transform:uppercase;letter-spacing:.05em;color:#fff}
+header h1 span{color:var(--gold)}
+header p{color:var(--muted);margin-top:.4rem;font-size:.9rem}
+.wrap{max-width:820px;margin:0 auto;padding:1.5rem 1rem 5rem}
+.name-box{background:var(--surface);border:1px solid var(--gold);border-radius:12px;padding:1.25rem;margin-bottom:1.5rem}
+.name-box label{display:block;color:var(--gold);font-weight:700;font-size:1rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem}
+.name-box small{display:block;color:var(--muted);font-size:.8rem;margin-bottom:.6rem}
+.name-box input{width:100%;background:var(--surface2);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:.7rem 1rem;color:#fff;font-size:1rem;outline:none}
+.name-box input:focus{border-color:var(--gold)}
+.tip{background:rgba(240,165,0,.07);border:1px solid rgba(240,165,0,.22);border-radius:10px;padding:.9rem 1.1rem;margin-bottom:1.5rem;font-size:.85rem;color:var(--muted);line-height:1.7}
+.tip b{color:var(--gold)}
+.sticky{position:sticky;top:0;z-index:10;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.9rem 1.1rem;margin-bottom:1.25rem}
+.sticky-row{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-bottom:.4rem}
+.sticky-row b{color:#fff}
+.pbar{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.pfill{height:100%;background:linear-gradient(90deg,#1a7a4a,var(--gold));border-radius:3px;transition:width .3s}
+.dhead{font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:1.4rem 0 .5rem;border-bottom:1px solid var(--border);margin-bottom:.9rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;margin-bottom:.6rem;transition:border-color .2s}
+.card.ok{border-color:rgba(26,180,80,.5)}
+.card.bad{border-color:var(--red);background:rgba(211,47,47,.06)}
+.card-top{display:flex;align-items:center;gap:.5rem;margin-bottom:.7rem;flex-wrap:wrap}
+.mid{font-size:.72rem;font-weight:700;letter-spacing:.08em;color:var(--muted);background:var(--surface2);padding:2px 7px;border-radius:4px}
+.grp{font-size:.72rem;color:var(--gold);font-weight:700}
+.tm{font-size:.72rem;color:var(--muted);margin-left:auto}
+.teams{display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem}
+.tn{font-weight:700;font-size:1.05rem;flex:1;min-width:60px}
+.tn.h{text-align:right;color:#fff}
+.tn.a{color:#b0c4be}
+.vs{background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:2px 9px;font-size:.72rem;font-weight:900;color:var(--muted);flex-shrink:0}
+.inputs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.45rem}
+.field{display:flex;flex-direction:column;align-items:center;gap:3px}
+.field label{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:center;line-height:1.3}
+.field label span{display:block;font-size:.8rem;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:110px}
+.field input{width:100%;background:var(--surface2);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:.5rem .2rem;color:#fff;font-size:1.35rem;font-weight:700;text-align:center;outline:none;-moz-appearance:textfield}
+.field input::-webkit-outer-spin-button,.field input::-webkit-inner-spin-button{-webkit-appearance:none}
+.field input:focus{border-color:var(--gold);background:rgba(240,165,0,.05)}
+.st{text-align:center;font-size:.82rem;font-weight:700;margin-top:.45rem;height:18px}
+.st.ok{color:#4caf50}.st.over{color:#ff9800}.st.low,.st.empty{color:var(--muted)}
+.sub{margin-top:2.5rem;text-align:center}
+.errbanner{background:rgba(211,47,47,.1);border:1px solid rgba(211,47,47,.3);border-radius:8px;padding:.7rem 1rem;font-size:.84rem;color:#ef9a9a;margin-bottom:1rem;display:none}
+.btn{background:var(--gold);color:#0d1f14;border:none;border-radius:10px;padding:.9rem 2.8rem;font-size:1.2rem;font-weight:900;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;transition:opacity .2s}
+.btn:hover{opacity:.85}
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;align-items:center;justify-content:center}
+.ov.show{display:flex}
+.ovc{background:var(--surface);border:1px solid var(--gold);border-radius:16px;padding:2rem 1.8rem;text-align:center;max-width:360px;width:90%}
+.ovc .ico{font-size:2.8rem;margin-bottom:.8rem}
+.ovc h2{font-size:1.5rem;font-weight:900;text-transform:uppercase;margin-bottom:.4rem}
+.ovc p{color:var(--muted);font-size:.9rem;line-height:1.5}
+.spin{width:44px;height:44px;border:4px solid var(--surface2);border-top:4px solid var(--gold);border-radius:50%;animation:sp .8s linear infinite;margin:0 auto .8rem}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media(max-width:480px){.field input{font-size:1.1rem}.tn{font-size:.88rem}}
 </style>
 </head>
 <body>
-
 <header>
-  <span class="trophy-icon">🏆</span>
   <h1>FIFA World Cup <span>2026</span></h1>
-  <p>Weighted Prediction Game — แจกแต้มให้ครบ 10 ต่อเกม</p>
+  <p>&#x0E41;&#x0E08;&#x0E01;&#x0E41;&#x0E15;&#x0E49;&#x0E21; 10 &#x0E41;&#x0E15;&#x0E49;&#x0E21;&#x0E15;&#x0E48;&#x0E2D;&#x0E40;&#x0E01;&#x0E21; &mdash; Weighted Prediction Game</p>
 </header>
-
-<div class="container">
-
-  <!-- NAME -->
-  <div class="name-section">
-    <label for="contestant-name">ชื่อผู้เข้าแข่งขัน (นามปากกา)</label>
-    <small>⚠️ ห้ามใช้ชื่อจริง</small>
-    <input type="text" id="contestant-name" placeholder="ใส่นามปากกาของคุณ..." maxlength="60" autocomplete="off">
+<div class="wrap">
+  <div class="name-box">
+    <label for="cname">&#x0E0A;&#x0E37;&#x0E48;&#x0E2D;&#x0E1C;&#x0E39;&#x0E49;&#x0E40;&#x0E02;&#x0E49;&#x0E32;&#x0E41;&#x0E02;&#x0E48;&#x0E07;&#x0E02;&#x0E31;&#x0E19; (&#x0E19;&#x0E32;&#x0E21;&#x0E1B;&#x0E32;&#x0E01;&#x0E01;&#x0E32;)</label>
+    <small>&#x26A0;&#xFE0F; &#x0E2B;&#x0E49;&#x0E32;&#x0E21;&#x0E43;&#x0E0A;&#x0E49;&#x0E0A;&#x0E37;&#x0E48;&#x0E2D;&#x0E08;&#x0E23;&#x0E34;&#x0E07;</small>
+    <input type="text" id="cname" placeholder="&#x0E43;&#x0E2A;&#x0E48;&#x0E19;&#x0E32;&#x0E21;&#x0E1B;&#x0E32;&#x0E01;&#x0E01;&#x0E32;&#x0E02;&#x0E2D;&#x0E07;&#x0E04;&#x0E38;&#x0E13;..." maxlength="60" autocomplete="off">
   </div>
-
-  <!-- INSTRUCTIONS -->
-  <div class="instructions">
-    <strong>วิธีเล่น:</strong> แจกแต้ม <strong>10 แต้มพอดี</strong> ให้กับ 3 ผลลัพธ์ในแต่ละเกม (ทีมเหย้าชนะ / เสมอ / ทีมเยือนชนะ)<br>
-    ตัวอย่าง: เหย้า <strong>6</strong> + เสมอ <strong>3</strong> + เยือน <strong>1</strong> = 10 ✅ &nbsp;|&nbsp; เกมที่แต้มไม่ครบ 10 จะ<strong>ส่งไม่ได้</strong>
+  <div class="tip">
+    <b>&#x0E27;&#x0E34;&#x0E18;&#x0E35;&#x0E40;&#x0E25;&#x0E48;&#x0E19;:</b> &#x0E41;&#x0E08;&#x0E01;&#x0E41;&#x0E15;&#x0E49;&#x0E21; <b>10 &#x0E41;&#x0E15;&#x0E49;&#x0E21;&#x0E1E;&#x0E2D;&#x0E14;&#x0E35;</b> &#x0E43;&#x0E2B;&#x0E49;&#x0E01;&#x0E31;&#x0E1A; 3 &#x0E1C;&#x0E25;&#x0E25;&#x0E31;&#x0E1E;&#x0E18;&#x0E4C;&#x0E43;&#x0E19;&#x0E41;&#x0E15;&#x0E48;&#x0E25;&#x0E30;&#x0E40;&#x0E01;&#x0E21;<br>
+    &#x0E15;&#x0E31;&#x0E27;&#x0E2D;&#x0E22;&#x0E48;&#x0E32;&#x0E07;: &#x0E40;&#x0E2B;&#x0E22;&#x0E49;&#x0E32; <b>6</b> + &#x0E40;&#x0E2A;&#x0E21;&#x0E2D; <b>3</b> + &#x0E40;&#x0E22;&#x0E37;&#x0E2D;&#x0E19; <b>1</b> = 10 &#x2705;
   </div>
-
-  <!-- PROGRESS -->
-  <div class="progress-bar-wrap">
-    <div class="progress-top">
-      <span>ความคืบหน้า: <strong id="valid-count">0</strong> / 72 เกม</span>
-      <span id="progress-pct">0%</span>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  <div class="sticky">
+    <div class="sticky-row"><span>&#x0E04;&#x0E27;&#x0E32;&#x0E21;&#x0E04;&#x0E37;&#x0E1A;&#x0E2B;&#x0E19;&#x0E49;&#x0E32;: <b id="vc">0</b> / 72 &#x0E40;&#x0E01;&#x0E21;</span><span id="pp">0%</span></div>
+    <div class="pbar"><div class="pfill" id="pf" style="width:0"></div></div>
   </div>
-
-  <!-- MATCHES (injected by JS) -->
-  <div id="matches-container"></div>
-
-  <!-- SUBMIT -->
-  <div class="submit-section">
-    <div class="error-summary" id="error-summary"></div>
-    <button class="submit-btn" id="submit-btn" onclick="submitForm()">ส่งคำทาย 🚀</button>
+  <div id="mc"></div>
+  <div class="sub">
+    <div class="errbanner" id="eb"></div>
+    <button class="btn" onclick="doSubmit()">&#x0E2A;&#x0E48;&#x0E07;&#x0E04;&#x0E33;&#x0E17;&#x0E32;&#x0E22; &#x1F680;</button>
   </div>
 </div>
-
-<!-- LOADING OVERLAY -->
-<div class="overlay" id="loading-overlay">
-  <div class="overlay-card">
-    <div class="spinner"></div>
-    <h2>กำลังส่งข้อมูล...</h2>
-    <p>โปรดรอสักครู่</p>
-  </div>
-</div>
-
-<!-- SUCCESS OVERLAY -->
-<div class="overlay" id="success-overlay">
-  <div class="overlay-card">
-    <div class="icon">🎉</div>
-    <h2 style="color:var(--gold)">ส่งสำเร็จ!</h2>
-    <p>บันทึกคำทายของคุณเรียบร้อยแล้ว<br>โชคดีในการแข่งขัน!</p>
-  </div>
-</div>
-
-<!-- ERROR OVERLAY -->
-<div class="overlay" id="error-overlay" onclick="document.getElementById('error-overlay').classList.remove('show')">
-  <div class="overlay-card">
-    <div class="icon">❌</div>
-    <h2 style="color:#ef9a9a">ส่งไม่สำเร็จ</h2>
-    <p id="error-msg">เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง</p>
-  </div>
-</div>
-
+<div class="ov" id="lov"><div class="ovc"><div class="spin"></div><h2>&#x0E01;&#x0E33;&#x0E25;&#x0E31;&#x0E07;&#x0E2A;&#x0E48;&#x0E07;...</h2><p>&#x0E42;&#x0E1B;&#x0E23;&#x0E14;&#x0E23;&#x0E2D;&#x0E2A;&#x0E31;&#x0E01;&#x0E04;&#x0E23;&#x0E39;&#x0E48;</p></div></div>
+<div class="ov" id="sov"><div class="ovc"><div class="ico">&#x1F389;</div><h2 style="color:var(--gold)">&#x0E2A;&#x0E48;&#x0E07;&#x0E2A;&#x0E33;&#x0E40;&#x0E23;&#x0E47;&#x0E08;!</h2><p>&#x0E1A;&#x0E31;&#x0E19;&#x0E17;&#x0E36;&#x0E01;&#x0E04;&#x0E33;&#x0E17;&#x0E32;&#x0E22;&#x0E40;&#x0E23;&#x0E35;&#x0E22;&#x0E1A;&#x0E23;&#x0E49;&#x0E2D;&#x0E22;&#x0E41;&#x0E25;&#x0E49;&#x0E27;!</p></div></div>
+<div class="ov" id="eov" onclick="this.classList.remove('show')"><div class="ovc"><div class="ico">&#x274C;</div><h2 style="color:#ef9a9a">&#x0E2A;&#x0E48;&#x0E07;&#x0E44;&#x0E21;&#x0E48;&#x0E2A;&#x0E33;&#x0E40;&#x0E23;&#x0E47;&#x0E08;</h2><p id="em">&#x0E40;&#x0E01;&#x0E34;&#x0E14;&#x0E02;&#x0E49;&#x0E2D;&#x0E1C;&#x0E34;&#x0E14;&#x0E1E;&#x0E25;&#x0E32;&#x0E14;</p></div></div>
 <script>
-// ===================== MATCH DATA =====================
-const MATCHES = [
-  // Date, Group, Home, Away, Time
-  {id:1,  date:"ศุกร์ 12 มิ.ย. 69",   group:"A", home:"เม็กซิโก",         away:"แอฟริกาใต้",              time:"02.00 น."},
-  {id:2,  date:"ศุกร์ 12 มิ.ย. 69",   group:"A", home:"เกาหลีใต้",        away:"เช็กเกีย",                time:"09.00 น."},
-  {id:3,  date:"เสาร์ 13 มิ.ย. 69",   group:"B", home:"แคนาดา",           away:"บอสเนียและเฮอร์เซโกวีนา", time:"02.00 น."},
-  {id:4,  date:"เสาร์ 13 มิ.ย. 69",   group:"D", home:"สหรัฐอเมริกา",     away:"ปารากวัย",               time:"08.00 น."},
-  {id:5,  date:"อาทิตย์ 14 มิ.ย. 69", group:"B", home:"กาตาร์",           away:"สวิตเซอร์แลนด์",          time:"02.00 น."},
-  {id:6,  date:"อาทิตย์ 14 มิ.ย. 69", group:"C", home:"บราซิล",           away:"โมร็อกโก",               time:"05.00 น."},
-  {id:7,  date:"อาทิตย์ 14 มิ.ย. 69", group:"C", home:"เฮติ",             away:"สกอตแลนด์",              time:"08.00 น."},
-  {id:8,  date:"อาทิตย์ 14 มิ.ย. 69", group:"D", home:"ออสเตรเลีย",       away:"ตุรกี",                  time:"11.00 น."},
-  {id:9,  date:"จันทร์ 15 มิ.ย. 69",  group:"E", home:"เยอรมนี",          away:"คูราเซา",                time:"00.00 น."},
-  {id:10, date:"จันทร์ 15 มิ.ย. 69",  group:"F", home:"เนเธอร์แลนด์",    away:"ญี่ปุ่น",                time:"03.00 น."},
-  {id:11, date:"จันทร์ 15 มิ.ย. 69",  group:"E", home:"ไอวอรีโคสต์",      away:"เอกวาดอร์",             time:"06.00 น."},
-  {id:12, date:"จันทร์ 15 มิ.ย. 69",  group:"F", home:"สวีเดน",           away:"ตูนิเซีย",               time:"09.00 น."},
-  {id:13, date:"จันทร์ 15 มิ.ย. 69",  group:"H", home:"สเปน",             away:"เคปเวิร์ด",              time:"23.00 น."},
-  {id:14, date:"อังคาร 16 มิ.ย. 69",  group:"G", home:"เบลเยียม",         away:"อียิปต์",                time:"02.00 น."},
-  {id:15, date:"อังคาร 16 มิ.ย. 69",  group:"H", home:"ซาอุดีอาระเบีย",  away:"อุรุกวัย",              time:"05.00 น."},
-  {id:16, date:"อังคาร 16 มิ.ย. 69",  group:"G", home:"อิหร่าน",          away:"นิวซีแลนด์",            time:"08.00 น."},
-  {id:17, date:"พุธ 17 มิ.ย. 69",     group:"I", home:"ฝรั่งเศส",         away:"เซเนกัล",               time:"02.00 น."},
-  {id:18, date:"พุธ 17 มิ.ย. 69",     group:"I", home:"อิรัก",            away:"นอร์เวย์",               time:"05.00 น."},
-  {id:19, date:"พุธ 17 มิ.ย. 69",     group:"J", home:"อาร์เจนตินา",     away:"แอลจีเรีย",             time:"08.00 น."},
-  {id:20, date:"พุธ 17 มิ.ย. 69",     group:"J", home:"ออสเตรีย",         away:"จอร์แดน",               time:"11.00 น."},
-  {id:21, date:"พฤหัสบดี 18 มิ.ย. 69",group:"K", home:"โปรตุเกส",        away:"ดีอาร์ คองโก",          time:"00.00 น."},
-  {id:22, date:"พฤหัสบดี 18 มิ.ย. 69",group:"L", home:"อังกฤษ",           away:"โครเอเชีย",              time:"03.00 น."},
-  {id:23, date:"พฤหัสบดี 18 มิ.ย. 69",group:"L", home:"กานา",             away:"ปานามา",                time:"06.00 น."},
-  {id:24, date:"พฤหัสบดี 18 มิ.ย. 69",group:"K", home:"อุซเบกิสถาน",     away:"โคลอมเบีย",             time:"09.00 น."},
-  {id:25, date:"พฤหัสบดี 18 มิ.ย. 69",group:"A", home:"เช็กเกีย",         away:"แอฟริกาใต้",            time:"23.00 น."},
-  {id:26, date:"ศุกร์ 19 มิ.ย. 69",   group:"B", home:"สวิตเซอร์แลนด์",  away:"บอสเนียและเฮอร์เซโกวีนา",time:"02.00 น."},
-  {id:27, date:"ศุกร์ 19 มิ.ย. 69",   group:"B", home:"แคนาดา",           away:"กาตาร์",                time:"05.00 น."},
-  {id:28, date:"ศุกร์ 19 มิ.ย. 69",   group:"A", home:"เม็กซิโก",         away:"เกาหลีใต้",             time:"08.00 น."},
-  {id:29, date:"เสาร์ 20 มิ.ย. 69",   group:"D", home:"สหรัฐอเมริกา",     away:"ออสเตรเลีย",            time:"02.00 น."},
-  {id:30, date:"เสาร์ 20 มิ.ย. 69",   group:"C", home:"สกอตแลนด์",        away:"โมร็อกโก",              time:"05.00 น."},
-  {id:31, date:"เสาร์ 20 มิ.ย. 69",   group:"C", home:"บราซิล",           away:"เฮติ",                  time:"07.30 น."},
-  {id:32, date:"เสาร์ 20 มิ.ย. 69",   group:"D", home:"ตุรกี",            away:"ปารากวัย",              time:"10.00 น."},
-  {id:33, date:"อาทิตย์ 21 มิ.ย. 69", group:"F", home:"เนเธอร์แลนด์",    away:"สวีเดน",                time:"00.00 น."},
-  {id:34, date:"อาทิตย์ 21 มิ.ย. 69", group:"E", home:"เยอรมนี",          away:"ไอวอรีโคสต์",           time:"03.00 น."},
-  {id:35, date:"อาทิตย์ 21 มิ.ย. 69", group:"E", home:"เอกวาดอร์",        away:"คูราเซา",               time:"07.00 น."},
-  {id:36, date:"อาทิตย์ 21 มิ.ย. 69", group:"F", home:"ตูนิเซีย",         away:"ญี่ปุ่น",               time:"11.00 น."},
-  {id:37, date:"อาทิตย์ 21 มิ.ย. 69", group:"H", home:"สเปน",             away:"ซาอุดีอาระเบีย",        time:"23.00 น."},
-  {id:38, date:"จันทร์ 22 มิ.ย. 69",  group:"G", home:"เบลเยียม",         away:"อิหร่าน",               time:"02.00 น."},
-  {id:39, date:"จันทร์ 22 มิ.ย. 69",  group:"H", home:"อุรุกวัย",         away:"เคปเวิร์ด",             time:"05.00 น."},
-  {id:40, date:"จันทร์ 22 มิ.ย. 69",  group:"G", home:"นิวซีแลนด์",      away:"อียิปต์",               time:"08.00 น."},
-  {id:41, date:"อังคาร 23 มิ.ย. 69",  group:"I", home:"นอร์เวย์",         away:"เซเนกัล",               time:"01.00 น."},
-  {id:42, date:"อังคาร 23 มิ.ย. 69",  group:"I", home:"ฝรั่งเศส",         away:"อิรัก",                 time:"04.00 น."},
-  {id:43, date:"อังคาร 23 มิ.ย. 69",  group:"J", home:"อาร์เจนตินา",     away:"ออสเตรีย",              time:"06.00 น."},
-  {id:44, date:"อังคาร 23 มิ.ย. 69",  group:"J", home:"จอร์แดน",          away:"แอลจีเรีย",             time:"09.00 น."},
-  {id:45, date:"พุธ 24 มิ.ย. 69",     group:"K", home:"โปรตุเกส",        away:"อุซเบกิสถาน",           time:"00.00 น."},
-  {id:46, date:"พุธ 24 มิ.ย. 69",     group:"L", home:"อังกฤษ",           away:"กานา",                  time:"03.00 น."},
-  {id:47, date:"พุธ 24 มิ.ย. 69",     group:"L", home:"ปานามา",           away:"โครเอเชีย",             time:"06.00 น."},
-  {id:48, date:"พุธ 24 มิ.ย. 69",     group:"K", home:"โคลอมเบีย",        away:"ดีอาร์ คองโก",         time:"09.00 น."},
-  {id:49, date:"พฤหัสบดี 25 มิ.ย. 69",group:"B", home:"สวิตเซอร์แลนด์",  away:"แคนาดา",               time:"02.00 น."},
-  {id:50, date:"พฤหัสบดี 25 มิ.ย. 69",group:"B", home:"บอสเนียและเฮอร์เซโกวีนา",away:"กาตาร์",         time:"02.00 น."},
-  {id:51, date:"พฤหัสบดี 25 มิ.ย. 69",group:"C", home:"สกอตแลนด์",       away:"บราซิล",               time:"05.00 น."},
-  {id:52, date:"พฤหัสบดี 25 มิ.ย. 69",group:"C", home:"โมร็อกโก",         away:"เฮติ",                 time:"05.00 น."},
-  {id:53, date:"พฤหัสบดี 25 มิ.ย. 69",group:"A", home:"เช็กเกีย",         away:"เม็กซิโก",             time:"08.00 น."},
-  {id:54, date:"พฤหัสบดี 25 มิ.ย. 69",group:"A", home:"แอฟริกาใต้",       away:"เกาหลีใต้",            time:"08.00 น."},
-  {id:55, date:"ศุกร์ 26 มิ.ย. 69",   group:"E", home:"เอกวาดอร์",        away:"เยอรมนี",              time:"03.00 น."},
-  {id:56, date:"ศุกร์ 26 มิ.ย. 69",   group:"E", home:"คูราเซา",          away:"ไอวอรีโคสต์",          time:"03.00 น."},
-  {id:57, date:"ศุกร์ 26 มิ.ย. 69",   group:"F", home:"ตูนิเซีย",         away:"เนเธอร์แลนด์",         time:"06.00 น."},
-  {id:58, date:"ศุกร์ 26 มิ.ย. 69",   group:"F", home:"ญี่ปุ่น",          away:"สวีเดน",               time:"06.00 น."},
-  {id:59, date:"ศุกร์ 26 มิ.ย. 69",   group:"D", home:"ตุรกี",            away:"สหรัฐอเมริกา",         time:"09.00 น."},
-  {id:60, date:"ศุกร์ 26 มิ.ย. 69",   group:"D", home:"ปารากวัย",         away:"ออสเตรเลีย",           time:"09.00 น."},
-  {id:61, date:"เสาร์ 27 มิ.ย. 69",   group:"I", home:"นอร์เวย์",         away:"ฝรั่งเศส",             time:"02.00 น."},
-  {id:62, date:"เสาร์ 27 มิ.ย. 69",   group:"I", home:"เซเนกัล",          away:"อิรัก",                time:"02.00 น."},
-  {id:63, date:"เสาร์ 27 มิ.ย. 69",   group:"H", home:"อุรุกวัย",         away:"สเปน",                 time:"07.00 น."},
-  {id:64, date:"เสาร์ 27 มิ.ย. 69",   group:"H", home:"เคปเวิร์ด",        away:"ซาอุดีอาระเบีย",       time:"07.00 น."},
-  {id:65, date:"เสาร์ 27 มิ.ย. 69",   group:"G", home:"นิวซีแลนด์",      away:"เบลเยียม",             time:"10.00 น."},
-  {id:66, date:"เสาร์ 27 มิ.ย. 69",   group:"G", home:"อียิปต์",          away:"อิหร่าน",              time:"10.00 น."},
-  {id:67, date:"อาทิตย์ 28 มิ.ย. 69", group:"L", home:"ปานามา",           away:"อังกฤษ",               time:"04.00 น."},
-  {id:68, date:"อาทิตย์ 28 มิ.ย. 69", group:"L", home:"โครเอเชีย",        away:"กานา",                 time:"04.00 น."},
-  {id:69, date:"อาทิตย์ 28 มิ.ย. 69", group:"K", home:"โคลอมเบีย",        away:"โปรตุเกส",             time:"06.30 น."},
-  {id:70, date:"อาทิตย์ 28 มิ.ย. 69", group:"K", home:"ดีอาร์ คองโก",    away:"อุซเบกิสถาน",          time:"06.30 น."},
-  {id:71, date:"อาทิตย์ 28 มิ.ย. 69", group:"J", home:"จอร์แดน",          away:"อาร์เจนตินา",          time:"09.00 น."},
-  {id:72, date:"อาทิตย์ 28 มิ.ย. 69", group:"J", home:"แอลจีเรีย",        away:"ออสเตรีย",             time:"09.00 น."},
+var SCRIPT_URL = https://script.google.com/macros/s/AKfycbzm-HHs4TgCERMZow4bkse2gmaPsIcBoZPpxwX8_T9Z15jPprF4EosMxLLAU2n8NHIWJw/exec ;
+var M = [
+[1,"\u0e28\u0e38\u0e01\u0e23\u0e4c 12 \u0e21\u0e34.\u0e22. 69","A","\u0e40\u0e21\u0e47\u0e01\u0e0b\u0e34\u0e42\u0e01","\u0e41\u0e2d\u0e1f\u0e23\u0e34\u0e01\u0e32\u0e43\u0e15\u0e49","02.00"],
+[2,"\u0e28\u0e38\u0e01\u0e23\u0e4c 12 \u0e21\u0e34.\u0e22. 69","A","\u0e40\u0e01\u0e32\u0e2b\u0e25\u0e35\u0e43\u0e15\u0e49","\u0e40\u0e0a\u0e47\u0e01\u0e40\u0e01\u0e35\u0e22","09.00"],
+[3,"\u0e40\u0e2a\u0e32\u0e23\u0e4c 13 \u0e21\u0e34.\u0e22. 69","B","\u0e41\u0e04\u0e19\u0e32\u0e14\u0e32","\u0e1a\u0e2d\u0e2a\u0e40\u0e19\u0e35\u0e22\u0e41\u0e25\u0e30\u0e40\u0e2e\u0e2d\u0e23\u0e4c\u0e40\u0e0b\u0e42\u0e01\u0e27\u0e35\u0e19\u0e32","02.00"],
+[4,"\u0e40\u0e2a\u0e32\u0e23\u0e4c 13 \u0e21\u0e34.\u0e22. 69","D","\u0e2a\u0e2b\u0e23\u0e31\u0e10\u0e2d\u0e40\u0e21\u0e23\u0e34\u0e01\u0e32","\u0e1b\u0e32\u0e23\u0e32\u0e01\u0e27\u0e31\u0e22","08.00"],
+[5,"\u0e2d\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c 14 \u0e21\u0e34.\u0e22. 69","B","\u0e01\u0e32\u0e15\u0e32\u0e23\u0e4c","\u0e2a\u0e27\u0e34\u0e15\u0e40\u0e0b\u0e2d\u0e23\u0e4c\u0e41\u0e25\u0e19\u0e14\u0e4c","02.00"],
+[6,"\u0e2d\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c 14 \u0e21\u0e34.\u0e22. 69","C","\u0e1a\u0e23\u0e32\u0e0b\u0e34\u0e25","\u0e42\u0e21\u0e23\u0e47\u0e2d\u0e01\u0e42\u0e01","05.00"],
+[7,"\u0e2d\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c 14 \u0e21\u0e34.\u0e22. 69","C","\u0e40\u0e2e\u0e15\u0e34","\u0e2a\u0e01\u0e2d\u0e15\u0e41\u0e25\u0e19\u0e14\u0e4c","08.00"],
+[8,"\u0e2d\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c 14 \u0e21\u0e34.\u0e22. 69","D","\u0e2d\u0e2d\u0e2a\u0e40\u0e15\u0e23\u0e40\u0e25\u0e35\u0e22","\u0e15\u0e38\u0e23\u0e01\u0e35","11.00"],
+[9,"\u0e08\u0e31\u0e19\u0e17\u0e23\u0e4c 15 \u0e21\u0e34.\u0e22. 69","E","\u0e40\u0e22\u0e2d\u0e23\u0e21\u0e19\u0e35","\u0e04\u0e39\u0e23\u0e32\u0e40\u0e0b\u0e32","00.00"],
+[10,"\u0e08\u0e31\u0e19\u0e17\u0e23\u0e4c 15 \u0e21\u0e34.\u0e22. 69","F","\u0e40\u0e19\u0e40\u0e18\u0e2d\u0e23\u0e4c\u0e41\u0e25\u0e19\u0e14\u0e4c","\u0e0d\u0e35\u0e48\u0e1b\u0e38\u0e48\u0e19","03.00"],
+[11,"\u0e08\u0e31\u0e19\u0e17\u0e23\u0e4c 15 \u0e21\u0e34.\u0e22. 69","E","\u0e44\u0e2d\u0e27\u0e2d\u0e23\u0e35\u0e42\u0e04\u0e2a\u0e15\u0e4c","\u0e40\u0e2d\u0e01\u0e27\u0e32\u0e14\u0e2d\u0e23\u0e4c","06.00"],
+[12,"\u0e08\u0e31\u0e19\u0e17\u0e23\u0e4c 15 \u0e21\u0e34.\u0e22. 69","F","\u0e2a\u0e27\u0e35\u0e40\u0e14\u0e19","\u0e15\u0e39\u0e19\u0e34\u0e40\u0e0b\u0e35\u0e22","09.00"],
+[13,"\u0e08\u0e31\u0e19\u0e17\u0e23\u0e4c 15 \u0e21\u0e34.\u0e22. 69","H","\u0e2a\u0e40\u0e1b\u0e19","\u0e40\u0e04\u0e1b\u0e40\u0e27\u0e34\u0e23\u0e4c\u0e14","23.00"],
+[14,"\u0e2d\u0e31\u0e07\u0e04\u0e32\u0e23 16 \u0e21\u0e34.\u0e22. 69","G","\u0e40\u0e1a\u0e25\u0e40\u0e22\u0e35\u0e22\u0e21","\u0e2d\u0e35\u0e22\u0e34\u0e1b\u0e15\u0e4c","02.00"],
+[15,"\u0e2d\u0e31\u0e07\u0e04\u0e32\u0e23 16 \u0e21\u0e34.\u0e22. 69","H","\u0e0b\u0e32\u0e2d\u0e38\u0e14\u0e35\u0e2d\u0e32\u0e23\u0e32\u0e40\u0e1a\u0e35\u0e22","\u0e2d\u0e38\u0e23\u0e38\u0e01\u0e27\u0e31\u0e22","05.00"],
+[16,"\u0e2d\u0e31\u0e07\u0e04\u0e32\u0e23 16 \u0e21\u0e34.\u0e22. 69","G","\u0e2d\u0e34\u0e2b\u0e23\u0e48\u0e32\u0e19","\u0e19\u0e34\u0e27\u0e0b\u0e35\u0e41\u0e25\u0e19\u0e14\u0e4c","08.00"],
+[17,"\u0e1e\u0e38\u0e18 17 \u0e21\u0e34.\u0e22. 69","I","\u0e1d\u0e23\u0e31\u0e48\u0e07\u0e40\u0e28\u0e2a","\u0e40\u0e0b\u0e40\u0e19\u0e01\u0e31\u0e25","02.00"],
+[18,"\u0e1e\u0e38\u0e18 17 \u0e21\u0e34.\u0e22. 69","I","\u0e2d\u0e34\u0e23\u0e31\u0e01","\u0e19\u0e2d\u0e23\u0e4c\u0e40\u0e27\u0e22\u0e4c","05.00"],
+[19,"\u0e1e\u0e38\u0e18 17 \u0e21\u0e34.\u0e22. 69","J","\u0e2d\u0e32\u0e23\u0e4c\u0e40\u0e08\u0e19\u0e15\u0e34\u0e19\u0e32","\u0e41\u0e2d\u0e25\u0e08\u0e35\u0e40\u0e23\u0e35\u0e22","08.00"],
+[20,"\u0e1e\u0e38\u0e18 17 \u0e21\u0e34.\u0e22. 69","J","\u0e2d\u0e2d\u0e2a\u0e40\u0e15\u0e23\u0e35\u0e22","\u0e08\u0e2d\u0e23\u0e4c\u0e41\u0e14\u0e19","11.00"],
+[21,"\u0e1e\u0e24\u0e2b\u0e31\u0e2a\u0e1a\u0e14\u0e35 18 \u0e21\u0e34.\u0e22. 69","K","\u0e42\u0e1b\u0e23\u0e15\u0e38\u0e40\u0e01\u0e2a","\u0e14\u0e35\u0e2d\u0e32\u0e23\u0e4c \u0e04\u0e2d\u0e07\u0e42\u0e01","00.00"],
+[22,"\u0e1e\u0e24\u0e2b\u0e31\u0e2a\u0e1a\u0e14\u0e35 18 \u0e21\u0e34.\u0e22. 69","L","\u0e2d\u0e31\u0e07\u0e01\u0e24\u0e29","\u0e42\u0e04\u0e23\u0e40\u0e2d\u0e40\u0e0a\u0e35\u0e22","03.00"],
+[23,"\u0e1e\u0e24\u0e2b\u0e31\u0e2a\u0e1a\u0e14\u0e35 18 \u0e21\u0e34.\u0e22. 69","L","\u0e01\u0e32\u0e19\u0e32","\u0e1b\u0e32\u0e19\u0e32\u0e21\u0e32","06.00"],
+[24,"\u0e1e\u0e24\u0e2b\u0e31\u0e2a\u0e1a\u0e14\u0e35 18 \u0e21\u0e34.\u0e22. 69","K","\u0e2d\u0e38\u0e0b\u0e40\u0e1a\u0e01\u0e34\u0e2a\u0e16\u0e32\u0e19","\u0e42\u0e04\u0e25\u0e2d\u0e21\u0e40\u0e1a\u0e35\u0e22","09.00"],
+[25,"\u0e1e\u0e24\u0e2b\u0e31\u0e2a\u0e1a\u0e14\u0e35 18 \u0e21\u0e34.\u0e22. 69","A","\u0e40\u0e0a\u0e47\u0e01\u0e40\u0e01\u0e35\u0e22","\u0e41\u0e2d\u0e1f\u0e23\u0e34\u0e01\u0e32\u0e43\u0e15\u0e49","23.00"],
+[26,"\u0e28\u0e38\u0e01\u0e23\u0e4c 19 \u0e21\u0e34.\u0e22. 69","B","\u0e2a\u0e27\u0e34\u0e15\u0e40\u0e0b\u0e2d\u0e23\u0e4c\u0e41\u0e25\u0e19\u0e14\u0e4c","\u0e1a\u0e2d\u0e2a\u0e40\u0e19\u0e35\u0e22\u0e41\u0e25\u0e30\u0e40\u0e2e\u0e2d\u0e23\u0e4c\u0e40\u0e0b\u0e42\u0e01\u0e27\u0e35\u0e19\u0e32","02.00"],
+[27,"\u0e28\u0e38\u0e01\u0e23\u0e4c 19 \u0e21\u0e34.\u0e22. 69","B","\u0e41\u0e04\u0e19\u0e32\u0e14\u0e32","\u0e01\u0e32\u0e15\u0e32\u0e23\u0e4c","05.00"],
+[28,"\u0e28\u0e38\u0e01\u0e23\u0e4c 19 \u0e21\u0e34.\u0e22. 69","A","\u0e40\u0e21\u0e47\u0e01\u0e0b\u0e34\u0e42\u0e01","\u0e40\u0e01\u0e32\u0e2b\u0e25\u0e35\u0e43\u0e15\u0e49","08.00"],
+[29,"\u0e40\u0e2a\u0e32\u0e23\u0e4c 20 \u0e21\u0e34.\u0e22. 69","D","\u0e2a\u0e2b\u0e23\u0e31\u0e10\u0e2d\u0e40\u0e21\u0e23\u0e34\u0e01\u0e32","\u0e2d\u0e2d\u0e2a\u0e40\u0e15\u0e23\u0e40\u0e25\u0e35\u0e22","02.00"],
+[30,"\u0e40\u0e2a\u0e32\u0e23\u0e4c 20 \u0e21\u0e34.\u0e22. 69","C","\u0e2a\u0e01\u0e2d\u0e15\u0e41\u0e25\u0e19\u0e14\u0e4c","\u0e42\u0e21\u0e23\u0e47\u0e2d\u0e01\u0e42\u0e01","05.00"],
+[31,"\u0e40\u0e2a\u0e32\u0e23\u0e4c 20 \u0e21\u0e34.\u0e22. 69","C","\u0e1a\u0e23\u0e32\u0e0b\u0e34\u0e25","\u0e40\u0e2e\u0e15\u0e34","07.30"],
+[32,"\u0e40\u0e2a\u0e32\u0e23\u0e4c 20 \u0e21\u0e34.\u0e22. 69","D","\u0e15\u0e38\u0e23\u0e01\u0e35","\u0e1b\u0e32\u0e23\u0e32\u0e01\u0e27\u0e31\u0e22","10.00"],
+[33,"\u0e2d\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c 21 \u0e21\u0e34.\u0e22. 69","F","\u0e40\u0e19\u0e40\u0e18\u0e2d\u0e23\u0e4c\u0e41\u0e25\u0e19\u0e14\u0e4c","\u0e2a\u0e27\u0e35\u0e40\u0e14\u0e19","00.00"],
+[34,"\u0e2d\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c 21 \u0e21\u0e14.\u0e22. 69","E","\u0e40\u0e22\u0e2d\u0e23\u0e21\u0e19\u0e35","\u0e44\u0e2d\u0e27\u0e2d\u0e23\u0e35\u0e42\u0e04\u0e2a\u0e15\u0e4c","03.00"],
+[35,"\u0e2d\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c 21 \u0e21\u0e14.\u0e22. 69","E","\u0e40\u0e2d\u0e01\u0e27\u0e32\u0e14\u0e2d\u0e23\u0e4c","\u0e04\u0e39\u0e23\u0e32\u0e40\u0e0b\u0e32","07.00"],
+[36,"\u0e2d\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c 21 \u0e21\u0e14.\u0e22. 69","F","\u0e15\u0e39\u0e19\u0e34\u0e40\u0e0b\u0e35\u0e22","\u0e0d\u0e35\u0e48\u0e1b\u0e38\u0e48\u0e19","11.00"],
+[37,"\u0e2d\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c 21 \u0e21\u0e14.\u0e22. 69","H","\u0e2a\u0e40\u0e1b\u0e19","\u0e0b\u0e32\u0e2d\u0e38\u0e14\u0e35\u0e2d\u0e32\u0e23\u0e32\u0e40\u0e1a\u0e35\u0e22","23.00"],
+[38,"\u0e08\u0e31\u0e19\u0e17\u0e23\u0e4c 22 \u0e21\u0e34.\u0e22. 69","G","\u0e40\u0e1a\u0e25\u0e40\u0e22\u0e35\u0e22\u0e21","\u0e2d\u0e34\u0e2b\u0e23\u0e48\u0e32\u0e19","02.00"],
+[39,"\u0e08\u0e31\u0e19\u0e17\u0e23\u0e4c 22 \u0e21\u0e34.\u0e22. 69","H","\u0e2d\u0e38\u0e23\u0e38\u0e01\u0e27\u0e31\u0e22","\u0e40\u0e04\u0e1b\u0e40\u0e27\u0e34\u0e23\u0e4c\u0e14","05.00"],
+[40,"\u0e08\u0e31\u0e19\u0e17\u0e23\u0e4c 22 \u0e21\u0e34.\u0e22. 69","G","\u0e19\u0e34\u0e27\u0e0b\u0e35\u0e41\u0e25\u0e19\u0e14\u0e4c","\u0e2d\u0e35\u0e22\u0e34\u0e1b\u0e15\u0e4c","08.00"],
+[41,"\u0e2d\u0e31\u0e07\u0e04\u0e32\u0e23 23 \u0e21\u0e34.\u0e22. 69","I","\u0e19\u0e2d\u0e23\u0e4c\u0e40\u0e27\u0e22\u0e4c","\u0e40\u0e0b\u0e40\u0e19\u0e01\u0e31\u0e25","01.00"],
+[42,"\u0e2d\u0e31\u0e07\u0e04\u0e32\u0e23 23 \u0e21\u0e34.\u0e22. 69","I","\u0e1d\u0e23\u0e31\u0e48\u0e07\u0e40\u0e28\u0e2a","\u0e2d\u0e34\u0e23\u0e31\u0e01","04.00"],
+[43,"\u0e2d\u0e31\u0e07\u0e04\u0e32\u0e23 23 \u0e21\u0e34.\u0e22. 69","J","\u0e2d\u0e32\u0e23\u0e4c\u0e40\u0e08\u0e19\u0e15\u0e34\u0e19\u0e32","\u0e2d\u0e2d\u0e2a\u0e40\u0e15\u0e23\u0e35\u0e22","06.00"],
+[44,"\u0e2d\u0e31\u0e07\u0e04\u0e32\u0e23 23 \u0e21\u0e34.\u0e22. 69","J","\u0e08\u0e2d\u0e23\u0e4c\u0e41\u0e14\u0e19","\u0e41\u0e2d\u0e25\u0e08\u0e35\u0e40\u0e23\u0e35\u0e22","09.00"],
+[45,"\u0e1e\u0e38\u0e18 24 \u0e21\u0e34.\u0e22. 69","K","\u0e42\u0e1b\u0e23\u0e15\u0e38\u0e40\u0e01\u0e2a","\u0e2d\u0e38\u0e0b\u0e40\u0e1a\u0e01\u0e34\u0e2a\u0e16\u0e32\u0e19","00.00"],
+[46,"\u0e1e\u0e38\u0e18 24 \u0e21\u0e34.\u0e22. 69","L","\u0e2d\u0e31\u0e07\u0e01\u0e24\u0e29","\u0e01\u0e32\u0e19\u0e32","03.00"],
+[47,"\u0e1e\u0e38\u0e18 24 \u0e21\u0e34.\u0e22. 69","L","\u0e1b\u0e32\u0e19\u0e32\u0e21\u0e32","\u0e42\u0e04\u0e23\u0e40\u0e2d\u0e40\u0e0a\u0e35\u0e22","06.00"],
+[48,"\u0e1e\u0e38\u0e18 24 \u0e21\u0e34.\u0e22. 69","K","\u0e42\u0e04\u0e25\u0e2d\u0e21\u0e40\u0e1a\u0e35\u0e22","\u0e14\u0e35\u0e2d\u0e32\u0e23\u0e4c \u0e04\u0e2d\u0e07\u0e42\u0e01","09.00"],
+[49,"\u0e1e\u0e24\u0e2b\u0e31\u0e2a\u0e1a\u0e14\u0e35 25 \u0e21\u0e34.\u0e22. 69","B","\u0e2a\u0e27\u0e34\u0e15\u0e40\u0e0b\u0e2d\u0e23\u0e4c\u0e41\u0e25\u0e19\u0e14\u0e4c","\u0e41\u0e04\u0e19\u0e32\u0e14\u0e32","02.00"],
+[50,"\u0e1e\u0e24\u0e2b\u0e31\u0e2a\u0e1a\u0e14\u0e35 25 \u0e21\u0e34.\u0e22. 69","B","\u0e1a\u0e2d\u0e2a\u0e40\u0e19\u0e35\u0e22\u0e41\u0e25\u0e30\u0e40\u0e2e\u0e2d\u0e23\u0e4c\u0e40\u0e0b\u0e42\u0e01\u0e27\u0e35\u0e19\u0e32","\u0e01\u0e32\u0e15\u0e32\u0e23\u0e4c","02.00"],
+[51,"\u0e1e\u0e24\u0e2b\u0e31\u0e2a\u0e1a\u0e14\u0e35 25 \u0e21\u0e34.\u0e22. 69","C","\u0e2a\u0e01\u0e2d\u0e15\u0e41\u0e25\u0e19\u0e14\u0e4c","\u0e1a\u0e23\u0e32\u0e0b\u0e34\u0e25","05.00"],
+[52,"\u0e1e\u0e24\u0e2b\u0e31\u0e2a\u0e1a\u0e14\u0e35 25 \u0e21\u0e34.\u0e22. 69","C","\u0e42\u0e21\u0e23\u0e47\u0e2d\u0e01\u0e42\u0e01","\u0e40\u0e2e\u0e15\u0e34","05.00"],
+[53,"\u0e1e\u0e24\u0e2b\u0e31\u0e2a\u0e1a\u0e14\u0e35 25 \u0e21\u0e34.\u0e22. 69","A","\u0e40\u0e0a\u0e47\u0e01\u0e40\u0e01\u0e35\u0e22","\u0e40\u0e21\u0e47\u0e01\u0e0b\u0e34\u0e42\u0e01","08.00"],
+[54,"\u0e1e\u0e24\u0e2b\u0e31\u0e2a\u0e1a\u0e14\u0e35 25 \u0e21\u0e34.\u0e22. 69","A","\u0e41\u0e2d\u0e1f\u0e23\u0e34\u0e01\u0e32\u0e43\u0e15\u0e49","\u0e40\u0e01\u0e32\u0e2b\u0e25\u0e35\u0e43\u0e15\u0e49","08.00"],
+[55,"\u0e28\u0e38\u0e01\u0e23\u0e4c 26 \u0e21\u0e34.\u0e22. 69","E","\u0e40\u0e2d\u0e01\u0e27\u0e32\u0e14\u0e2d\u0e23\u0e4c","\u0e40\u0e22\u0e2d\u0e23\u0e21\u0e19\u0e35","03.00"],
+[56,"\u0e28\u0e38\u0e01\u0e23\u0e4c 26 \u0e21\u0e34.\u0e22. 69","E","\u0e04\u0e39\u0e23\u0e32\u0e40\u0e0b\u0e32","\u0e44\u0e2d\u0e27\u0e2d\u0e23\u0e35\u0e42\u0e04\u0e2a\u0e15\u0e4c","03.00"],
+[57,"\u0e28\u0e38\u0e01\u0e23\u0e4c 26 \u0e21\u0e34.\u0e22. 69","F","\u0e15\u0e39\u0e19\u0e34\u0e40\u0e0b\u0e35\u0e22","\u0e40\u0e19\u0e40\u0e18\u0e2d\u0e23\u0e4c\u0e41\u0e25\u0e19\u0e14\u0e4c","06.00"],
+[58,"\u0e28\u0e38\u0e01\u0e23\u0e4c 26 \u0e21\u0e34.\u0e22. 69","F","\u0e0d\u0e35\u0e48\u0e1b\u0e38\u0e48\u0e19","\u0e2a\u0e27\u0e35\u0e40\u0e14\u0e19","06.00"],
+[59,"\u0e28\u0e38\u0e01\u0e23\u0e4c 26 \u0e21\u0e34.\u0e22. 69","D","\u0e15\u0e38\u0e23\u0e01\u0e35","\u0e2a\u0e2b\u0e23\u0e31\u0e10\u0e2d\u0e40\u0e21\u0e23\u0e34\u0e01\u0e32","09.00"],
+[60,"\u0e28\u0e38\u0e01\u0e23\u0e4c 26 \u0e21\u0e34.\u0e22. 69","D","\u0e1b\u0e32\u0e23\u0e32\u0e01\u0e27\u0e31\u0e22","\u0e2d\u0e2d\u0e2a\u0e40\u0e15\u0e23\u0e40\u0e25\u0e35\u0e22","09.00"],
+[61,"\u0e40\u0e2a\u0e32\u0e23\u0e4c 27 \u0e21\u0e34.\u0e22. 69","I","\u0e19\u0e2d\u0e23\u0e4c\u0e40\u0e27\u0e22\u0e4c","\u0e1d\u0e23\u0e31\u0e48\u0e07\u0e40\u0e28\u0e2a","02.00"],
+[62,"\u0e40\u0e2a\u0e32\u0e23\u0e4c 27 \u0e21\u0e34.\u0e22. 69","I","\u0e40\u0e0b\u0e40\u0e19\u0e01\u0e31\u0e25","\u0e2d\u0e34\u0e23\u0e31\u0e01","02.00"],
+[63,"\u0e40\u0e2a\u0e32\u0e23\u0e4c 27 \u0e21\u0e34.\u0e22. 69","H","\u0e2d\u0e38\u0e23\u0e38\u0e01\u0e27\u0e31\u0e22","\u0e2a\u0e40\u0e1b\u0e19","07.00"],
+[64,"\u0e40\u0e2a\u0e32\u0e23\u0e4c 27 \u0e21\u0e34.\u0e22. 69","H","\u0e40\u0e04\u0e1b\u0e40\u0e27\u0e34\u0e23\u0e4c\u0e14","\u0e0b\u0e32\u0e2d\u0e38\u0e14\u0e35\u0e2d\u0e32\u0e23\u0e32\u0e40\u0e1a\u0e35\u0e22","07.00"],
+[65,"\u0e40\u0e2a\u0e32\u0e23\u0e4c 27 \u0e21\u0e34.\u0e22. 69","G","\u0e19\u0e34\u0e27\u0e0b\u0e35\u0e41\u0e25\u0e19\u0e14\u0e4c","\u0e40\u0e1a\u0e25\u0e40\u0e22\u0e35\u0e22\u0e21","10.00"],
+[66,"\u0e40\u0e2a\u0e32\u0e23\u0e4c 27 \u0e21\u0e34.\u0e22. 69","G","\u0e2d\u0e35\u0e22\u0e34\u0e1b\u0e15\u0e4c","\u0e2d\u0e34\u0e2b\u0e23\u0e48\u0e32\u0e19","10.00"],
+[67,"\u0e2d\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c 28 \u0e21\u0e34.\u0e22. 69","L","\u0e1b\u0e32\u0e19\u0e32\u0e21\u0e32","\u0e2d\u0e31\u0e07\u0e01\u0e24\u0e29","04.00"],
+[68,"\u0e2d\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c 28 \u0e21\u0e34.\u0e22. 69","L","\u0e42\u0e04\u0e23\u0e40\u0e2d\u0e40\u0e0a\u0e35\u0e22","\u0e01\u0e32\u0e19\u0e32","04.00"],
+[69,"\u0e2d\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c 28 \u0e21\u0e34.\u0e22. 69","K","\u0e42\u0e04\u0e25\u0e2d\u0e21\u0e40\u0e1a\u0e35\u0e22","\u0e42\u0e1b\u0e23\u0e15\u0e38\u0e40\u0e01\u0e2a","06.30"],
+[70,"\u0e2d\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c 28 \u0e21\u0e34.\u0e22. 69","K","\u0e14\u0e35\u0e2d\u0e32\u0e23\u0e4c \u0e04\u0e2d\u0e07\u0e42\u0e01","\u0e2d\u0e38\u0e0b\u0e40\u0e1a\u0e01\u0e34\u0e2a\u0e16\u0e32\u0e19","06.30"],
+[71,"\u0e2d\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c 28 \u0e21\u0e34.\u0e22. 69","J","\u0e08\u0e2d\u0e23\u0e4c\u0e41\u0e14\u0e19","\u0e2d\u0e32\u0e23\u0e4c\u0e40\u0e08\u0e19\u0e15\u0e34\u0e19\u0e32","09.00"],
+[72,"\u0e2d\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c 28 \u0e21\u0e34.\u0e22. 69","J","\u0e41\u0e2d\u0e25\u0e08\u0e35\u0e40\u0e23\u0e35\u0e22","\u0e2d\u0e2d\u0e2a\u0e40\u0e15\u0e23\u0e35\u0e22","09.00"]
 ];
-
-// ===================== RENDER MATCHES =====================
-document.addEventListener('DOMContentLoaded', function() {
-const container = document.getElementById('matches-container');
-let currentDate = null;
-
-MATCHES.forEach(m => {
-  if (m.date !== currentDate) {
-    currentDate = m.date;
-    const dh = document.createElement('div');
-    dh.className = 'date-header';
-    dh.textContent = m.date;
-    container.appendChild(dh);
-  }
-
-  const card = document.createElement('div');
-  card.className = 'match-card';
-  card.id = `match-${m.id}`;
-  card.innerHTML = `
-    <div class="match-header">
-      <span class="match-id">นัดที่ ${m.id}</span>
-      <span class="match-group">กลุ่ม ${m.group}</span>
-      <span class="match-time">⏰ ${m.time}</span>
-    </div>
-    <div class="teams-row">
-      <div class="team-name team-home">${m.home}</div>
-      <div class="vs-badge">VS</div>
-      <div class="team-name team-away">${m.away}</div>
-    </div>
-    <div class="score-inputs">
-      <div class="score-field">
-        <label>ทีมเหย้า ชนะ<span>${m.home}</span></label>
-        <input type="number" id="h${m.id}" min="0" max="10" placeholder="0" oninput="onInput(${m.id})">
-      </div>
-      <div class="score-field">
-        <label>เสมอ<span>Draw</span></label>
-        <input type="number" id="d${m.id}" min="0" max="10" placeholder="0" oninput="onInput(${m.id})">
-      </div>
-      <div class="score-field">
-        <label>ทีมเยือน ชนะ<span>${m.away}</span></label>
-        <input type="number" id="a${m.id}" min="0" max="10" placeholder="0" oninput="onInput(${m.id})">
-      </div>
-    </div>
-    <div class="score-status zero" id="status-${m.id}">รอใส่แต้ม...</div>
-  `;
-  container.appendChild(card);
-});
-
-updateProgress();
-}); // end DOMContentLoaded
-
-// ===================== VALIDATION =====================
-function getVal(id) {
-  const v = parseInt(document.getElementById(id).value);
-  return isNaN(v) ? 0 : v;
-}
-
-function onInput(matchId) {
-  const h = getVal(`h${matchId}`);
-  const d = getVal(`d${matchId}`);
-  const a = getVal(`a${matchId}`);
-  const total = h + d + a;
-  const card = document.getElementById(`match-${matchId}`);
-  const status = document.getElementById(`status-${matchId}`);
-
-  card.classList.remove('error', 'valid');
-  status.className = 'score-status';
-
-  if (total === 0) {
-    status.className = 'score-status zero';
-    status.textContent = 'รอใส่แต้ม...';
-  } else if (total === 10) {
-    card.classList.add('valid');
-    status.className = 'score-status ok';
-    status.textContent = `✓ ${total}/10 — ครบแล้ว!`;
-  } else if (total > 10) {
-    card.classList.add('error');
-    status.className = 'score-status over';
-    status.textContent = `${total}/10 — เกิน ${total - 10} แต้ม`;
-  } else {
-    status.className = 'score-status under';
-    status.textContent = `${total}/10 — ขาดอีก ${10 - total} แต้ม`;
-  }
-  updateProgress();
-}
-
-function updateProgress() {
-  let valid = 0;
-  MATCHES.forEach(m => {
-    const h = getVal(`h${m.id}`), d = getVal(`d${m.id}`), a = getVal(`a${m.id}`);
-    if (h + d + a === 10) valid++;
-  });
-  document.getElementById('valid-count').textContent = valid;
-  const pct = Math.round((valid / 72) * 100);
-  document.getElementById('progress-pct').textContent = pct + '%';
-  document.getElementById('progress-fill').style.width = pct + '%';
-}
-
-// ===================== SUBMIT =====================
-// ⚠️ REPLACE THIS URL with your Google Apps Script Web App URL
-const SCRIPT_URL = https://script.google.com/macros/s/AKfycbzm-HHs4TgCERMZow4bkse2gmaPsIcBoZPpxwX8_T9Z15jPprF4EosMxLLAU2n8NHIWJw/exec;
-
-async function submitForm() {
-  // Validate name
-  const name = document.getElementById('contestant-name').value.trim();
-  if (!name) {
-    alert('กรุณาใส่ชื่อผู้เข้าแข่งขันก่อน');
-    document.getElementById('contestant-name').focus();
-    return;
-  }
-
-  // Validate all matches
-  const errors = [];
-  MATCHES.forEach(m => {
-    const h = getVal(`h${m.id}`), d = getVal(`d${m.id}`), a = getVal(`a${m.id}`);
-    if (h + d + a !== 10) errors.push(m.id);
-  });
-
-  if (errors.length > 0) {
-    const errDiv = document.getElementById('error-summary');
-    errDiv.style.display = 'block';
-    errDiv.textContent = `⚠️ มี ${errors.length} เกมที่แต้มไม่ครบ 10: นัดที่ ${errors.slice(0, 10).join(', ')}${errors.length > 10 ? '...' : ''}`;
-    // Scroll to first error
-    document.getElementById(`match-${errors[0]}`).scrollIntoView({behavior: 'smooth', block: 'center'});
-    return;
-  }
-
-  document.getElementById('error-summary').style.display = 'none';
-
-  // Build payload
-  const rows = MATCHES.map(m => ({
-    matchId: m.id,
-    group: m.group,
-    home: m.home,
-    away: m.away,
-    homeWeight: getVal(`h${m.id}`),
-    drawWeight: getVal(`d${m.id}`),
-    awayWeight: getVal(`a${m.id}`)
-  }));
-
-  const payload = { name, timestamp: new Date().toISOString(), predictions: rows };
-
-  // Show loading
-  document.getElementById('loading-overlay').classList.add('show');
-
-  try {
-    const resp = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: { 'Content-Type': 'text/plain' }
-    });
-    const result = await resp.text();
-    document.getElementById('loading-overlay').classList.remove('show');
-    if (result.includes('success') || result.includes('OK')) {
-      document.getElementById('success-overlay').classList.add('show');
-    } else {
-      throw new Error(result);
+window.onload=function(){
+  var mc=document.getElementById('mc');
+  var curDate='';
+  for(var i=0;i<M.length;i++){
+    var m=M[i];
+    var id=m[0],date=m[1],grp=m[2],home=m[3],away=m[4],time=m[5];
+    if(date!==curDate){
+      curDate=date;
+      var dh=document.createElement('div');
+      dh.className='dhead';
+      dh.textContent=date;
+      mc.appendChild(dh);
     }
-  } catch (e) {
-    document.getElementById('loading-overlay').classList.remove('show');
-    document.getElementById('error-msg').textContent = e.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่';
-    document.getElementById('error-overlay').classList.add('show');
+    var card=document.createElement('div');
+    card.className='card';
+    card.id='c'+id;
+    card.innerHTML='<div class="card-top"><span class="mid">#'+id+'</span><span class="grp">'+'\u0e01\u0e25\u0e38\u0e48\u0e21 '+grp+'</span><span class="tm">'+time+' \u0e19.</span></div>'
+      +'<div class="teams"><div class="tn h">'+home+'</div><div class="vs">VS</div><div class="tn a">'+away+'</div></div>'
+      +'<div class="inputs">'
+        +'<div class="field"><label>\u0e40\u0e2b\u0e22\u0e49\u0e32\u0e0a\u0e19\u0e30<span>'+home+'</span></label><input type="number" id="h'+id+'" min="0" max="10" placeholder="0" oninput="chk('+id+')"></div>'
+        +'<div class="field"><label>\u0e40\u0e2a\u0e21\u0e2d<span>Draw</span></label><input type="number" id="d'+id+'" min="0" max="10" placeholder="0" oninput="chk('+id+')"></div>'
+        +'<div class="field"><label>\u0e40\u0e22\u0e37\u0e2d\u0e19\u0e0a\u0e19\u0e30<span>'+away+'</span></label><input type="number" id="a'+id+'" min="0" max="10" placeholder="0" oninput="chk('+id+')"></div>'
+      +'</div>'
+      +'<div class="st empty" id="s'+id+'">\u0e23\u0e2d\u0e43\u0e2a\u0e48\u0e41\u0e15\u0e49\u0e21...</div>';
+    mc.appendChild(card);
   }
+};
+function gv(id){var v=parseInt(document.getElementById(id).value);return isNaN(v)?0:v;}
+function chk(id){
+  var h=gv('h'+id),d=gv('d'+id),a=gv('a'+id),t=h+d+a;
+  var card=document.getElementById('c'+id);
+  var st=document.getElementById('s'+id);
+  card.className='card';
+  if(t===0){st.className='st empty';st.textContent='\u0e23\u0e2d\u0e43\u0e2a\u0e48\u0e41\u0e15\u0e49\u0e21...';}
+  else if(t===10){card.className='card ok';st.className='st ok';st.textContent='\u2713 10/10 \u2014 \u0e04\u0e23\u0e1a\u0e41\u0e25\u0e49\u0e27!';}
+  else if(t>10){card.className='card bad';st.className='st over';st.textContent=t+'/10 \u2014 \u0e40\u0e01\u0e34\u0e19 '+(t-10)+' \u0e41\u0e15\u0e49\u0e21';}
+  else{st.className='st low';st.textContent=t+'/10 \u2014 \u0e02\u0e32\u0e14\u0e2d\u0e35\u0e01 '+(10-t)+' \u0e41\u0e15\u0e49\u0e21';}
+  upd();
+}
+function upd(){
+  var ok=0;
+  for(var i=0;i<M.length;i++){var id=M[i][0];if(gv('h'+id)+gv('d'+id)+gv('a'+id)===10)ok++;}
+  document.getElementById('vc').textContent=ok;
+  var p=Math.round(ok/72*100);
+  document.getElementById('pp').textContent=p+'%';
+  document.getElementById('pf').style.width=p+'%';
+}
+function doSubmit(){
+  var name=document.getElementById('cname').value.trim();
+  if(!name){alert('\u0e01\u0e23\u0e38\u0e13\u0e32\u0e43\u0e2a\u0e48\u0e0a\u0e37\u0e48\u0e2d\u0e01\u0e48\u0e2d\u0e19');return;}
+  var errs=[];
+  for(var i=0;i<M.length;i++){var id=M[i][0];if(gv('h'+id)+gv('d'+id)+gv('a'+id)!==10)errs.push(id);}
+  if(errs.length>0){
+    var eb=document.getElementById('eb');
+    eb.style.display='block';
+    eb.textContent='\u26A0\uFE0F \u0e21\u0e35 '+errs.length+' \u0e40\u0e01\u0e21\u0e17\u0e35\u0e48\u0e41\u0e15\u0e49\u0e21\u0e44\u0e21\u0e48\u0e04\u0e23\u0e1a 10: \u0e19\u0e31\u0e14\u0e17\u0e35\u0e48 '+errs.slice(0,8).join(', ')+(errs.length>8?'...':'');
+    document.getElementById('c'+errs[0]).scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  document.getElementById('eb').style.display='none';
+  var rows=M.map(function(m){var id=m[0];return{matchId:id,group:m[2],home:m[3],away:m[4],homeWeight:gv('h'+id),drawWeight:gv('d'+id),awayWeight:gv('a'+id)};});
+  var payload={name:name,timestamp:new Date().toISOString(),predictions:rows};
+  document.getElementById('lov').classList.add('show');
+  fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(payload),headers:{'Content-Type':'text/plain'}})
+    .then(function(r){return r.text();})
+    .then(function(t){
+      document.getElementById('lov').classList.remove('show');
+      if(t.indexOf('success')>-1||t.indexOf('OK')>-1){document.getElementById('sov').classList.add('show');}
+      else{throw new Error(t);}
+    })
+    .catch(function(e){
+      document.getElementById('lov').classList.remove('show');
+      document.getElementById('em').textContent=e.message||'\u0e40\u0e01\u0e34\u0e14\u0e02\u0e49\u0e2d\u0e1c\u0e34\u0e14\u0e1e\u0e25\u0e32\u0e14';
+      document.getElementById('eov').classList.add('show');
+    });
 }
 </script>
 </body>
