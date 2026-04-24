@@ -185,9 +185,9 @@ window.onload=function(){
     card.innerHTML='<div class="card-top"><span class="mid">#'+id+'</span><span class="grp">'+'\u0e01\u0e25\u0e38\u0e48\u0e21 '+grp+'</span><span class="tm">'+time+' \u0e19.</span></div>'
       +'<div class="teams"><div class="tn h">'+home+'</div><div class="vs">VS</div><div class="tn a">'+away+'</div></div>'
       +'<div class="inputs">'
-        +'<div class="field"><label>\u0e40\u0e2b\u0e22\u0e49\u0e32\u0e0a\u0e19\u0e30<span>'+home+'</span></label><input type="number" id="h'+id+'" min="0" max="10" placeholder="0" oninput="chk('+id+')"></div>'
-        +'<div class="field"><label>\u0e40\u0e2a\u0e21\u0e2d<span>Draw</span></label><input type="number" id="d'+id+'" min="0" max="10" placeholder="0" oninput="chk('+id+')"></div>'
-        +'<div class="field"><label>\u0e40\u0e22\u0e37\u0e2d\u0e19\u0e0a\u0e19\u0e30<span>'+away+'</span></label><input type="number" id="a'+id+'" min="0" max="10" placeholder="0" oninput="chk('+id+')"></div>'
+        +'<div class="field"><label>\u0e40\u0e2b\u0e22\u0e49\u0e32\u0e0a\u0e19\u0e30<span>'+home+'</span></label><input type="tel" id="h'+id+'" min="0" max="10" placeholder="0" oninput="chk('+id+')"></div>'
+        +'<div class="field"><label>\u0e40\u0e2a\u0e21\u0e2d<span>Draw</span></label><input type="tel" id="d'+id+'" min="0" max="10" placeholder="0" oninput="chk('+id+')"></div>'
+        +'<div class="field"><label>\u0e40\u0e22\u0e37\u0e2d\u0e19\u0e0a\u0e19\u0e30<span>'+away+'</span></label><input type="tel" id="a'+id+'" min="0" max="10" placeholder="0" oninput="chk('+id+')"></div>'
       +'</div>'
       +'<div class="st empty" id="s'+id+'">\u0e23\u0e2d\u0e43\u0e2a\u0e48\u0e41\u0e15\u0e49\u0e21...</div>';
     mc.appendChild(card);
