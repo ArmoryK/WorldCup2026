@@ -60,7 +60,94 @@ header p{color:var(--muted);margin-top:.4rem;font-size:.9rem}
 .spin{width:44px;height:44px;border:4px solid var(--surface2);border-top:4px solid var(--gold);border-radius:50%;animation:sp .8s linear infinite;margin:0 auto .8rem}
 @keyframes sp{to{transform:rotate(360deg)}}
 @media(max-width:480px){.field input{font-size:1.1rem}.tn{font-size:.88rem}}
+#receipt-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;align-items:flex-start;justify-content:center;overflow-y:auto;padding:1rem}
+#receipt-wrap.show{display:flex}
+#receipt{background:#0d1f14;border:2px solid #f0a500;border-radius:16px;width:100%;max-width:500px;margin:auto;overflow:hidden;font-family:system-ui,sans-serif}
+.rc-head{background:linear-gradient(135deg,#0a1a0f,#1a4a2a);padding:1.2rem 1.2rem .9rem;text-align:center;border-bottom:2px solid #f0a500}
+.rc-head h2{color:#f0a500;font-size:1.25rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem}
+.rc-name{color:#fff;font-size:1.05rem;font-weight:700}
+.rc-ts{color:#8aab96;font-size:.72rem;margin-top:.2rem}
+.rc-body{padding:.5rem .7rem .7rem}
+.rc-dhead{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#8aab96;padding:.65rem 0 .25rem;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:.25rem}
+.rc-row{display:grid;grid-template-columns:1.1rem 1fr 0.9fr 0.9fr 0.9fr;gap:.2rem;align-items:center;padding:.22rem .05rem;border-bottom:1px solid rgba(255,255,255,.04);font-size:.7rem}
+.rn{color:#8aab96;font-size:.62rem;text-align:center}
+.tc{color:#e0e0e0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc{text-align:center;font-weight:700;font-size:.82rem;color:#ccc;background:#1c3824;border-radius:4px;padding:1px 2px}
+.sc.hi{color:#f0a500;background:rgba(240,165,0,.18)}
+.rc-foot{background:#0a1a0f;padding:.75rem 1rem;text-align:center;border-top:1px solid rgba(255,255,255,.07)}
+.rc-foot p{color:#8aab96;font-size:.72rem;line-height:1.5}
+.rc-foot strong{color:#f0a500}
+.rc-btns{display:flex;gap:.6rem;justify-content:center;padding:.75rem .8rem .9rem;background:#0d1f14}
+.rc-btn{flex:1;max-width:200px;padding:.7rem;border:none;border-radius:8px;font-size:.9rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.05em}
+.rc-btn.dl{background:#f0a500;color:#0d1f14}
+.rc-btn.cl{background:#1c3824;color:#8aab96;border:1px solid rgba(255,255,255,.1)}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
+function showReceipt(name) {
+  document.getElementById('rc-name').textContent = 'ชื่อ: ' + name;
+  var now = new Date();
+  document.getElementById('rc-ts').textContent = 'วันที่: ' + now.toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'}) + ' ' + now.toLocaleTimeString('th-TH');
+  
+  // Group matches by date
+  var byDate = {};
+  for(var i=0;i<M.length;i++){
+    var m=M[i];
+    if(!byDate[m[1]]) byDate[m[1]]=[];
+    byDate[m[1]].push(m);
+  }
+  
+  var body = document.getElementById('rc-body');
+  body.innerHTML = '';
+  
+  // Header row
+  var hdr = document.createElement('div');
+  hdr.className='rc-row';
+  hdr.style.cssText='color:#8aab96;font-size:.65rem;font-weight:700;border-bottom:1px solid rgba(255,255,255,.15);padding-bottom:.3rem;margin-bottom:.1rem';
+  hdr.innerHTML='<div></div><div>คู่</div><div style="text-align:center">เหย้า</div><div style="text-align:center">เสมอ</div><div style="text-align:center">เยือน</div>';
+  body.appendChild(hdr);
+
+  var dates = Object.keys(byDate);
+  for(var d=0;d<dates.length;d++){
+    var dh = document.createElement('div');
+    dh.className='rc-dhead';
+    dh.textContent = dates[d];
+    body.appendChild(dh);
+    
+    var matches = byDate[dates[d]];
+    for(var j=0;j<matches.length;j++){
+      var m=matches[j];
+      var id=m[0];
+      var h=gv('h'+id), dr=gv('d'+id), a=gv('a'+id);
+      var max=Math.max(h,dr,a);
+      var row=document.createElement('div');
+      row.className='rc-row';
+      row.innerHTML='<div class="rn">'+id+'</div>'
+        +'<div class="tc">'+m[3]+' v '+m[4]+'</div>'
+        +'<div class="sc'+(h===max&&h>0?' hi':'')+'">'+h+'</div>'
+        +'<div class="sc'+(dr===max&&dr>0&&dr>=h&&dr>=a?' hi':'')+'">'+dr+'</div>'
+        +'<div class="sc'+(a===max&&a>0&&a>h&&a>dr?' hi':'')+'">'+a+'</div>';
+      body.appendChild(row);
+    }
+  }
+  document.getElementById('receipt-wrap').classList.add('show');
+}
+
+function downloadReceipt(){
+  var btn=document.querySelector('.rc-btn.dl');
+  btn.textContent='กำลังสร;&#x0E49;&#x0E32;&#x0E07;...';
+  btn.disabled=true;
+  var el=document.getElementById('receipt');
+  html2canvas(el,{backgroundColor:'#0d1f14',scale:2,useCORS:true,logging:false}).then(function(canvas){
+    var link=document.createElement('a');
+    var name=document.getElementById('cname').value.trim()||'prediction';
+    link.download='WorldCup2026_'+name.replace(/\s+/g,'_')+'.png';
+    link.href=canvas.toDataURL('image/png');
+    link.click();
+    btn.textContent='\u{1F4F7} ดาวน์โหลดภาพ';
+    btn.disabled=false;
+  });
+}
+</script>
 </head>
 <body>
 <header>
@@ -88,7 +175,26 @@ header p{color:var(--muted);margin-top:.4rem;font-size:.9rem}
   </div>
 </div>
 <div class="ov" id="lov"><div class="ovc"><div class="spin"></div><h2>&#x0E01;&#x0E33;&#x0E25;&#x0E31;&#x0E07;&#x0E2A;&#x0E48;&#x0E07;...</h2><p>&#x0E42;&#x0E1B;&#x0E23;&#x0E14;&#x0E23;&#x0E2D;&#x0E2A;&#x0E31;&#x0E01;&#x0E04;&#x0E23;&#x0E39;&#x0E48;</p></div></div>
-<div class="ov" id="sov"><div class="ovc"><div class="ico">&#x1F389;</div><h2 style="color:var(--gold)">&#x0E2A;&#x0E48;&#x0E07;&#x0E2A;&#x0E33;&#x0E40;&#x0E23;&#x0E47;&#x0E08;!</h2><p>&#x0E1A;&#x0E31;&#x0E19;&#x0E17;&#x0E36;&#x0E01;&#x0E04;&#x0E33;&#x0E17;&#x0E32;&#x0E22;&#x0E40;&#x0E23;&#x0E35;&#x0E22;&#x0E1A;&#x0E23;&#x0E49;&#x0E2D;&#x0E22;&#x0E41;&#x0E25;&#x0E49;&#x0E27;!</p></div></div>
+<div id="receipt-wrap">
+  <div>
+    <div id="receipt">
+      <div class="rc-head">
+        <h2>&#x1F3C6; World Cup 2026</h2>
+        <div style="color:#ccc;font-size:.8rem;margin-top:.2rem">&#x0E43;&#x0E1A;&#x0E22;&#x0E37;&#x0E19;&#x0E22;&#x0E31;&#x0E19;&#x0E04;&#x0E33;&#x0E17;&#x0E32;&#x0E22; / Prediction Receipt</div>
+        <div class="rc-name" id="rc-name"></div>
+        <div class="rc-ts" id="rc-ts"></div>
+      </div>
+      <div class="rc-body" id="rc-body"></div>
+      <div class="rc-foot">
+        <p>&#x0E04;&#x0E33;&#x0E17;&#x0E32;&#x0E22;&#x0E17;&#x0E31;&#x0E49;&#x0E07;&#x0E2B;&#x0E21;&#x0E14; <strong>72 &#x0E40;&#x0E01;&#x0E21;</strong> &#x0E1A;&#x0E31;&#x0E19;&#x0E17;&#x0E36;&#x0E01;&#x0E40;&#x0E23;&#x0E35;&#x0E22;&#x0E1A;&#x0E23;&#x0E49;&#x0E2D;&#x0E22;&#x0E41;&#x0E25;&#x0E49;&#x0E27; &#x26BD; &#x0E42;&#x0E0A;&#x0E04;&#x0E14;&#x0E35;!</p>
+      </div>
+    </div>
+    <div class="rc-btns">
+      <button class="rc-btn dl" onclick="downloadReceipt()">&#x1F4F7; &#x0E14;&#x0E32;&#x0E27;&#x0E19;&#x0E4C;&#x0E42;&#x0E2B;&#x0E25;&#x0E14;&#x0E20;&#x0E32;&#x0E1E;</button>
+      <button class="rc-btn cl" onclick="document.getElementById('receipt-wrap').classList.remove('show')">&#x0E1B;&#x0E34;&#x0E14;</button>
+    </div>
+  </div>
+</div>
 <div class="ov" id="eov" onclick="this.classList.remove('show')"><div class="ovc"><div class="ico">&#x274C;</div><h2 style="color:#ef9a9a">&#x0E2A;&#x0E48;&#x0E07;&#x0E44;&#x0E21;&#x0E48;&#x0E2A;&#x0E33;&#x0E40;&#x0E23;&#x0E47;&#x0E08;</h2><p id="em">&#x0E40;&#x0E01;&#x0E34;&#x0E14;&#x0E02;&#x0E49;&#x0E2D;&#x0E1C;&#x0E34;&#x0E14;&#x0E1E;&#x0E25;&#x0E32;&#x0E14;</p></div></div>
 <script>
 var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzm-HHs4TgCERMZow4bkse2gmaPsIcBoZPpxwX8_T9Z15jPprF4EosMxLLAU2n8NHIWJw/exec';
@@ -233,7 +339,7 @@ function doSubmit(){
     .then(function(r){return r.text();})
     .then(function(t){
       document.getElementById('lov').classList.remove('show');
-      if(t.indexOf('success')>-1||t.indexOf('OK')>-1){document.getElementById('sov').classList.add('show');}
+      if(t.indexOf('success')>-1||t.indexOf('OK')>-1){showReceipt(name);}
       else{throw new Error(t);}
     })
     .catch(function(e){
@@ -241,6 +347,71 @@ function doSubmit(){
       document.getElementById('em').textContent=e.message||'\u0e40\u0e01\u0e34\u0e14\u0e02\u0e49\u0e2d\u0e1c\u0e34\u0e14\u0e1e\u0e25\u0e32\u0e14';
       document.getElementById('eov').classList.add('show');
     });
+}
+
+function showReceipt(name) {
+  document.getElementById('rc-name').textContent = 'ชื่อ: ' + name;
+  var now = new Date();
+  document.getElementById('rc-ts').textContent = 'วันที่: ' + now.toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'}) + ' ' + now.toLocaleTimeString('th-TH');
+  
+  // Group matches by date
+  var byDate = {};
+  for(var i=0;i<M.length;i++){
+    var m=M[i];
+    if(!byDate[m[1]]) byDate[m[1]]=[];
+    byDate[m[1]].push(m);
+  }
+  
+  var body = document.getElementById('rc-body');
+  body.innerHTML = '';
+  
+  // Header row
+  var hdr = document.createElement('div');
+  hdr.className='rc-row';
+  hdr.style.cssText='color:#8aab96;font-size:.65rem;font-weight:700;border-bottom:1px solid rgba(255,255,255,.15);padding-bottom:.3rem;margin-bottom:.1rem';
+  hdr.innerHTML='<div></div><div>คู่</div><div style="text-align:center">เหย้า</div><div style="text-align:center">เสมอ</div><div style="text-align:center">เยือน</div>';
+  body.appendChild(hdr);
+
+  var dates = Object.keys(byDate);
+  for(var d=0;d<dates.length;d++){
+    var dh = document.createElement('div');
+    dh.className='rc-dhead';
+    dh.textContent = dates[d];
+    body.appendChild(dh);
+    
+    var matches = byDate[dates[d]];
+    for(var j=0;j<matches.length;j++){
+      var m=matches[j];
+      var id=m[0];
+      var h=gv('h'+id), dr=gv('d'+id), a=gv('a'+id);
+      var max=Math.max(h,dr,a);
+      var row=document.createElement('div');
+      row.className='rc-row';
+      row.innerHTML='<div class="rn">'+id+'</div>'
+        +'<div class="tc">'+m[3]+' v '+m[4]+'</div>'
+        +'<div class="sc'+(h===max&&h>0?' hi':'')+'">'+h+'</div>'
+        +'<div class="sc'+(dr===max&&dr>0&&dr>=h&&dr>=a?' hi':'')+'">'+dr+'</div>'
+        +'<div class="sc'+(a===max&&a>0&&a>h&&a>dr?' hi':'')+'">'+a+'</div>';
+      body.appendChild(row);
+    }
+  }
+  document.getElementById('receipt-wrap').classList.add('show');
+}
+
+function downloadReceipt(){
+  var btn=document.querySelector('.rc-btn.dl');
+  btn.textContent='กำลังสร;&#x0E49;&#x0E32;&#x0E07;...';
+  btn.disabled=true;
+  var el=document.getElementById('receipt');
+  html2canvas(el,{backgroundColor:'#0d1f14',scale:2,useCORS:true,logging:false}).then(function(canvas){
+    var link=document.createElement('a');
+    var name=document.getElementById('cname').value.trim()||'prediction';
+    link.download='WorldCup2026_'+name.replace(/\s+/g,'_')+'.png';
+    link.href=canvas.toDataURL('image/png');
+    link.click();
+    btn.textContent='\u{1F4F7} ดาวน์โหลดภาพ';
+    btn.disabled=false;
+  });
 }
 </script>
 </body>
