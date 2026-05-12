@@ -156,9 +156,12 @@ function downloadReceipt(){
 </header>
 <div class="wrap">
   <div class="name-box">
-    <label for="cname">&#x0E0A;&#x0E37;&#x0E48;&#x0E2D;&#x0E1C;&#x0E39;&#x0E49;&#x0E40;&#x0E02;&#x0E49;&#x0E32;&#x0E41;&#x0E02;&#x0E48;&#x0E07;&#x0E02;&#x0E31;&#x0E19; (&#x0E19;&#x0E32;&#x0E21;&#x0E1B;&#x0E32;&#x0E01;&#x0E01;&#x0E32;)</label>
+    <label for="cname">&#x0E19;&#x0E32;&#x0E21;&#x0E1B;&#x0E32;&#x0E01;&#x0E01;&#x0E32; (AKA)</label>
     <small>&#x26A0;&#xFE0F; &#x0E2B;&#x0E49;&#x0E32;&#x0E21;&#x0E43;&#x0E0A;&#x0E49;&#x0E0A;&#x0E37;&#x0E48;&#x0E2D;&#x0E08;&#x0E23;&#x0E34;&#x0E07;</small>
-    <input type="text" id="cname" placeholder="&#x0E43;&#x0E2A;&#x0E48;&#x0E19;&#x0E32;&#x0E21;&#x0E1B;&#x0E32;&#x0E01;&#x0E01;&#x0E32;&#x0E02;&#x0E2D;&#x0E07;&#x0E04;&#x0E38;&#x0E13;..." maxlength="60" autocomplete="off">
+    <input type="text" id="cname" placeholder="&#x0E43;&#x0E2A;&#x0E48;&#x0E19;&#x0E32;&#x0E21;&#x0E1B;&#x0E32;&#x0E01;&#x0E01;&#x0E32;..." maxlength="60" autocomplete="off">
+    <label for="realname" style="margin-top:.9rem">&#x0E0A;&#x0E37;&#x0E48;&#x0E2D;&#x0E08;&#x0E23;&#x0E34;&#x0E07; (Real Name)</label>
+    <small>&#x0E40;&#x0E1E;&#x0E37;&#x0E48;&#x0E2D;&#x0E43;&#x0E0A;&#x0E49;&#x0E22;&#x0E37;&#x0E19;&#x0E22;&#x0E31;&#x0E19;&#x0E15;&#x0E31;&#x0E27;&#x0E15;&#x0E19;)</small>
+    <input type="text" id="realname" placeholder="&#x0E43;&#x0E2A;&#x0E48;&#x0E0A;&#x0E37;&#x0E48;&#x0E2D;-&#x0E19;&#x0E32;&#x0E21;&#x0E2A;&#x0E01;&#x0E38;&#x0E25;&#x0E08;&#x0E23;&#x0E34;&#x0E07;..." maxlength="80" autocomplete="off">
   </div>
   <div class="tip">
     <b>&#x0E27;&#x0E34;&#x0E18;&#x0E35;&#x0E40;&#x0E25;&#x0E48;&#x0E19;:</b> &#x0E41;&#x0E08;&#x0E01;&#x0E41;&#x0E15;&#x0E49;&#x0E21; <b>10 &#x0E41;&#x0E15;&#x0E49;&#x0E21;&#x0E1E;&#x0E2D;&#x0E14;&#x0E35;</b> &#x0E43;&#x0E2B;&#x0E49;&#x0E01;&#x0E31;&#x0E1A; 3 &#x0E1C;&#x0E25;&#x0E25;&#x0E31;&#x0E1E;&#x0E18;&#x0E4C;&#x0E43;&#x0E19;&#x0E41;&#x0E15;&#x0E48;&#x0E25;&#x0E30;&#x0E40;&#x0E01;&#x0E21;<br>
@@ -321,7 +324,9 @@ function upd(){
 }
 function doSubmit(){
   var name=document.getElementById('cname').value.trim();
-  if(!name){alert('\u0e01\u0e23\u0e38\u0e13\u0e32\u0e43\u0e2a\u0e48\u0e0a\u0e37\u0e48\u0e2d\u0e01\u0e48\u0e2d\u0e19');return;}
+  if(!name){alert('\u0e01\u0e23\u0e38\u0e13\u0e32\u0e43\u0e2a\u0e48\u0e19\u0e32\u0e21\u0e1b\u0e32\u0e01\u0e01\u0e32\u0e01\u0e48\u0e2d\u0e19');return;}
+  var realname=document.getElementById('realname').value.trim();
+  if(!realname){alert('\u0e01\u0e23\u0e38\u0e13\u0e32\u0e43\u0e2a\u0e48\u0e0a\u0e37\u0e48\u0e2d\u0e08\u0e23\u0e34\u0e07\u0e01\u0e48\u0e2d\u0e19');return;}
   var errs=[];
   for(var i=0;i<M.length;i++){var id=M[i][0];if(gv('h'+id)+gv('d'+id)+gv('a'+id)!==10)errs.push(id);}
   if(errs.length>0){
@@ -333,7 +338,7 @@ function doSubmit(){
   }
   document.getElementById('eb').style.display='none';
   var rows=M.map(function(m){var id=m[0];return{matchId:id,group:m[2],home:m[3],away:m[4],homeWeight:gv('h'+id),drawWeight:gv('d'+id),awayWeight:gv('a'+id)};});
-  var payload={name:name,timestamp:new Date().toISOString(),predictions:rows};
+  var payload={name:name,realname:realname,timestamp:new Date().toISOString(),predictions:rows};
   document.getElementById('lov').classList.add('show');
   fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(payload),headers:{'Content-Type':'text/plain'}})
     .then(function(r){return r.text();})
